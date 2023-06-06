@@ -1,0 +1,23 @@
+.game-card{
+    min-width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    font-size: 2em;
+    background-color: greenyellow;
+}
+
+#home {
+    background-color: aquamarine;
+    width: 100%;
+    display: flex;
+}
+.games {
+    padding: 10px;
+    background-color: crimson;
+    min-width: 40%;
+}
+.users {
+    padding: 10px;
+    background-color: cadetblue;
+    min-width: 40%;
+}

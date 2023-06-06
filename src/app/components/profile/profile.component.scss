@@ -1,0 +1,28 @@
+.games {
+    padding: 10px;
+    background-color: crimson;
+    min-width: 40%;
+}
+
+.game-card{
+    min-width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    font-size: 2em;
+    background-color: greenyellow;
+}
+
+.user-card{
+    min-width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    font-size: 2em;
+    background-color: turquoise;
+}
+a {
+    font-size: 1em;
+}
+
+.game-card a:hover {
+    font-size: 1.5em;
+}

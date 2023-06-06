@@ -1,0 +1,36 @@
+<div class="form">
+    <h1>Login Form</h1>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" #localForm="ngForm">
+        <div class="inline-input">
+            <label for="username">Username: </label>
+            <input class="text-field" 
+            type="text" 
+            placeholder="Username" 
+            formControlName="username"
+            [ngClass]="{error: !loginForm.get('username').valid}">
+        </div>
+        <small *ngIf="!loginForm.get('username').valid">
+            Please fill out this field
+        </small>
+        <div class="inline-input">
+            <label for="password">Pard: </label>
+            <input class="text-field" 
+            type="password" 
+            placeholder="Password" 
+            formControlName="password" 
+            [ngClass]="{error: !loginForm.get('password').valid}">
+        </div>
+        <small *ngIf="!loginForm.get('password').valid">
+            Please fill out this field
+        </small>
+        <div>
+            <input type="submit" value="Submit" id="btn">
+            <h1 *ngIf="loginInProgress">logging in ...</h1>
+        </div>
+        <div class="invalid-input" *ngIf="errorMessage">
+            {{errorMessage}}
+        </div>
+    </form>
+    <p>myForm value: {{ loginForm.value | json }}</p>
+    <p>myForm status: {{ loginForm.status | json }}</p>
+</div>

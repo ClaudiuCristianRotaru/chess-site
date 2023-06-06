@@ -1,0 +1,5 @@
+<p>matchmaking works!</p>
+<div class="uid-input">
+    <button *ngIf="!inQueue" type="button" (click)="joinQueue()">Join queue</button>
+    <button *ngIf="inQueue" type="button" (click)="leaveQueue()">Leave queue</button>
+</div>
