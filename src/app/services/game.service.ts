@@ -18,10 +18,24 @@ export class GameService {
     }));
   }
 
-  getUserGames(username:string){
-    return this.http.get<GameData[]>('http://localhost:3000/game/user/'+username).pipe(map(game => {
+  getUserGames(username:string, query:string){
+    return this.http.get<GameData[]>(`http://localhost:3000/game/user/${username}${query}`).pipe(map(game => {
       console.log(game);
       return game;
+    }));
+  }
+
+  getGame(id: string) {
+    return this.http.get<GameData>(`http://localhost:3000/game/${id}`).pipe(map(game => {
+      console.log(game);
+      return game;
+    }));
+  }
+
+  getUserGamesCount(username:string) {
+    return this.http.get<number>(`http://localhost:3000/game/user/${username}/count`).pipe(map(count => {
+      console.log(count);
+      return count;
     }));
   }
 }

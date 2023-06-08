@@ -6,7 +6,7 @@
 </div>
 <div class="games">
 
-    <a [routerLink]="['/analysis', game.id]" *ngFor="let game of pastGames | async">
+    <a [routerLink]="['/analysis', game.id]" *ngFor="let game of pastGames">
         <div class="game-card">
             <h3>{{game.id}}</h3>
             <h2>Game result: {{game.result}}</h2>
@@ -17,5 +17,10 @@
                 ({{game.black_player.rating}})</h2>
         </div>
     </a>
-
+    <mat-paginator 
+    #paginator
+    (page)="handlePageEvent($event)"
+    [pageSize]="5"
+    aria-label="Select Page"
+    [length]="pastGamesCount"></mat-paginator>
 </div>

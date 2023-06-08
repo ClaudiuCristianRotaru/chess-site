@@ -1,9 +1,9 @@
 $piece-size: 12.5%;
 
 :host {
-    display: flex;
-    height: 800px;
-    width: 800px;
+    display: block;
+    height: 100%;
+    width: 100%;
     background-color: aqua;
 }
 
@@ -63,8 +63,8 @@ $piece-size: 12.5%;
 }
 
 .board {
-    position: absolute;
-    display: inline-block;
+    position: relative;
+    display: block;
     background-image: url("https://www.chess.com/boards/green/150.png");
     background-size: cover;
     width: 800px;
@@ -91,7 +91,6 @@ $piece-size: 12.5%;
 }
 
 .main {
-    display: block;
     height: 100%;
     width: 100%;
 }

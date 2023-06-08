@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { io } from 'socket.io-client';
 import { ChessGame } from 'src/chess-model/ChessGame';
@@ -13,13 +13,11 @@ import { UserData } from 'src/app/models/user-data';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
   socket = io("http://192.168.1.2:2112");
-  dragPosition = { x: 0, y: 0 };
   game: ChessGame = new ChessGame();
-  inputText: string = "hello"
   constructor(private http: HttpClient, private router: ActivatedRoute, private _zone: NgZone, private userService: UserService) { }
-  pieces: [IPiece, string, { x: number, y: number }, number][] = [];
+  pieces: {piece:IPiece,class: string,pos: { x: number, y: number }}[] = [];
   possibleMoves: string[] = [];
   gameId: string = "";
   color: string = "";
@@ -39,6 +37,8 @@ export class GameComponent implements OnInit {
       this.game.setupFromFEN(response.FEN);
       this.game.setupBoard();
       this.game.calculateMoves();
+      this.game.gameParams.pastPositions = response.pastPositions;
+      console.log(this.game.gameParams);
       this.linkPieces();
     });
 
@@ -54,6 +54,11 @@ export class GameComponent implements OnInit {
 
     })
 
+    this.socket.on("gameended", params => {
+      console.log(params)
+    })
+
+    console.log(this.pieces);
 
   }
 
@@ -62,11 +67,11 @@ export class GameComponent implements OnInit {
     if (this.color == "") return;
     this.game.gameParams.whitePieces.forEach(piece => {
       let uiPos = this.color == "white" ? { x: piece.col * 100, y: 700 - piece.row * 100 } : { x: 700 - piece.col * 100, y: piece.row * 100 };
-      this.pieces.push([piece, `piece ${piece.class}`, uiPos, this.pieces.length])
+      this.pieces.push({piece: piece,class: `piece ${piece.class}`, pos: uiPos})
     })
     this.game.gameParams.blackPieces.forEach(piece => {
       let uiPos = this.color == "white" ? { x: piece.col * 100, y: 700 - piece.row * 100 } : { x: 700 - piece.col * 100, y: piece.row * 100 };
-      this.pieces.push([piece, `piece ${piece.class}`, uiPos, this.pieces.length])
+      this.pieces.push({piece: piece, class: `piece ${piece.class}`, pos: uiPos})
     })
   }
 
@@ -76,9 +81,9 @@ export class GameComponent implements OnInit {
     this.promotionDialogVisible=false;
     let x = $event.source.freeDragPosition;
     for (let i = 0; i < this.pieces.length; i++) {
-      if (x == this.pieces[i][2]) {
+      if (x == this.pieces[i].pos) {
         this.draggingIndex = i;
-        this.pieces[this.draggingIndex][0].possibleMoves.forEach(move => {
+        this.pieces[this.draggingIndex].piece.possibleMoves.forEach(move => {
           this.possibleMoves.push(`highlight row${move.endPosition[0]} col${move.endPosition[1]} ${this.color == "black" ? "inverted" : ""}`)
         })
       }
@@ -93,7 +98,7 @@ export class GameComponent implements OnInit {
       return
     };
     let possibleIndexes: { x: number, y: number }[] = [];
-    this.pieces[this.draggingIndex][0].possibleMoves.forEach(move => {
+    this.pieces[this.draggingIndex].piece.possibleMoves.forEach(move => {
       let x = (this.color == 'white') ? { x: move.endPosition[1], y: move.endPosition[0] } : { x: move.endPosition[1], y: move.endPosition[0] }
       possibleIndexes.push(x);
     })
@@ -110,17 +115,17 @@ export class GameComponent implements OnInit {
 
 
     if (found) {
-      this.pieces[this.draggingIndex][2] = {
+      this.pieces[this.draggingIndex].pos = {
         x: Math.round($event.source.getFreeDragPosition().x / 100) * 100,
         y: Math.round($event.source.getFreeDragPosition().y / 100) * 100
       };
-      if ((this.pieces[this.draggingIndex][0].isWhite == true && this.color == 'black') ||
-        (this.pieces[this.draggingIndex][0].isWhite == false && this.color == 'white')) {
+      if ((this.pieces[this.draggingIndex].piece.isWhite == true && this.color == 'black') ||
+        (this.pieces[this.draggingIndex].piece.isWhite == false && this.color == 'white')) {
         console.log("Opponent's piece!");
         this.resetDraggedPiece($event);
         return;
       }
-      if (this.game.gameParams.whiteTurn != this.pieces[this.draggingIndex][0].isWhite) {
+      if (this.game.gameParams.whiteTurn != this.pieces[this.draggingIndex].piece.isWhite) {
         console.log("Not your turn!");
         this.resetDraggedPiece($event);
         return;
@@ -133,13 +138,18 @@ export class GameComponent implements OnInit {
     }
     
     console.log(droppedIndex);
-    this.moveInWaiting = [this.pieces[this.draggingIndex][0].row, this.pieces[this.draggingIndex][0].col, droppedIndex.y, droppedIndex.x];
-    if(this.pieces[this.draggingIndex][0] instanceof Pawn && droppedIndex.y % 7 == 0){
+    this.moveInWaiting = [this.pieces[this.draggingIndex].piece.row, this.pieces[this.draggingIndex].piece.col, droppedIndex.y, droppedIndex.x];
+    if(this.pieces[this.draggingIndex].piece instanceof Pawn && droppedIndex.y % 7 == 0){
       this.promotionDialogVisible = true;}
     else{
       this.executeNextStep(this.moveInWaiting);
     }
-    this.game.checkForGameEnd(!this.game.gameParams.whiteTurn);
+    let gameStatus : any = this.game.checkForGameEnd(!this.game.gameParams.whiteTurn);
+    if(gameStatus.result != "Continue" ){
+      console.log(gameStatus);
+      let id = this.gameId.toString();
+      this.socket.emit("gameend", {room: id, status: gameStatus })
+    }
     this.possibleMoves = [];
     this.linkPieces();
   }
@@ -148,11 +158,11 @@ export class GameComponent implements OnInit {
     let id = this.gameId.toString();
     if(promotion == "none"){
       this.game.nextStep(move);
-      this.socket.emit("make move", { startX: move[1], startY: move[0], endX: move[3], endY: move[2], room: id, FEN: this.game.getCurrentPosition() })
+      this.socket.emit("make move", { startX: move[1], startY: move[0], endX: move[3], endY: move[2], room: id, FEN: this.game.getCurrentPosition(), pastPositions: this.game.gameParams.pastPositions })
     }
     else{ 
       this.game.nextStep(move, promotion);
-      this.socket.emit("make move", { startX: move[1], startY: move[0], endX: move[3], endY: move[2], promotion:promotion, room: id, FEN: this.game.getCurrentPosition() })
+      this.socket.emit("make move", { startX: move[1], startY: move[0], endX: move[3], endY: move[2], promotion:promotion, room: id, FEN: this.game.getCurrentPosition(), pastPositions: this.game.gameParams.pastPositions })
     }
   }
 
@@ -175,10 +185,14 @@ export class GameComponent implements OnInit {
   }
 
   resetDraggedPiece($event: CdkDragEnd) {
-    this.pieces[this.draggingIndex][2] = {
+    this.pieces[this.draggingIndex].pos = {
       x: $event.source.freeDragPosition.x,
       y: $event.source.freeDragPosition.y
     };
     this.possibleMoves = [];
   };
+
+  ngOnDestroy(): void {
+      this.socket.close();
+  }
 }

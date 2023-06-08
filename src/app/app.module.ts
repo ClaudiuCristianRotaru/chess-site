@@ -18,7 +18,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { RouterModule } from '@angular/router';
 import { ProfileComponent } from './components/profile/profile.component';
-import { AnalysisComponent } from './components/analysis/analysis.component';
+import { AnalysisComponent } from './analysis/analysis.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { AnalysisComponent } from './components/analysis/analysis.component';
     MatRadioModule,
     MatInputModule,
     MatFormFieldModule,
-    RouterModule
+    RouterModule,
+    MatPaginatorModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true}],
   bootstrap: [AppComponent]

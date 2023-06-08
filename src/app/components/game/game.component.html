@@ -1,18 +1,19 @@
 <div class="main">
-    <div *ngIf="promotionDialogVisible" style="display: flex;">
-        <button type="button" (click)="promoteQueen()" class="wq promotion">quen</button>
-        <button type="button" (click)="promoteRook()" class="wr promotion">rok</button>
-        <button type="button" (click)="promoteBishop()" class="wb promotion">shup</button>
-        <button type="button" (click)="promoteKnight()" class="wn promotion">knight</button>
+    <h1>HAHAHA</h1>
+    <div *ngIf="promotionDialogVisible" style="display: flex; position: absolute; z-index: 1000;">
+        <div type="button" (click)="promoteQueen()" class="wq promotion">quen</div>
+        <div type="button" (click)="promoteRook()" class="wr promotion">rok</div>
+        <div type="button" (click)="promoteBishop()" class="wb promotion">shup</div>
+        <div type="button" (click)="promoteKnight()" class="wn promotion">knight</div>
     </div>
     <div class="board" appDisableRightClick>
-        <div *ngFor="let piece of pieces" [ngClass]="piece[1]"
+        <div *ngFor="let piece of pieces" [ngClass]="piece.class"
         cdkDrag
         cdkDragBoundary=".board"
         (cdkDragEnded)="releasePiece($event)"
         (cdkDragStarted)="getPiece($event)"
-        [cdkDragFreeDragPosition]="piece[2]"></div>
+        [cdkDragFreeDragPosition]="piece.pos"></div>
         <div *ngFor="let move of possibleMoves" [ngClass]="move"></div>
     </div>
-
+    <h1>RETd</h1>
 </div>

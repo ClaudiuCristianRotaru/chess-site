@@ -14,7 +14,8 @@ import { GameService } from 'src/app/services/game.service';
 export class ProfileComponent implements OnInit {
 
   user?: UserData | null;
-  pastGames: BehaviorSubject<GameData[]>;
+  pastGames: GameData[];
+  pastGamesCount: number;
   constructor(private activatedRoute:ActivatedRoute,
      private router: Router,
      private userService:UserService,
@@ -23,13 +24,24 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     let usernameParam = this.activatedRoute.snapshot.paramMap.get('username');
     this.userService.getUserByUsername(usernameParam).subscribe({
-      next: (x) => {this.user = x, this.fetchPastGames(); }, 
+      next: (x) => {this.user = x, this.fetchPastGames(`?page=0`), this.fetchGamesCount();}, 
       error: (x) => this.router.navigate(['notfound'])});
-  };
+  }
   
-  fetchPastGames() {
-    this.gameService.getUserGames(this.user.username).subscribe({
-      next: (x) => { this.pastGames = new BehaviorSubject<GameData[]>(x); }, 
+  fetchPastGames(query) {
+    this.gameService.getUserGames(this.user.username, query).subscribe({
+      next: (x) => { this.pastGames = x; }, 
       error: (x) => console.log(x)})
+  }
+
+  fetchGamesCount() {
+    this.gameService.getUserGamesCount(this.user.username).subscribe({
+      next: (x) => { this.pastGamesCount = x; }, 
+      error: (x) => console.log(x)})
+  }
+
+  handlePageEvent($event){
+    console.log($event);
+    this.fetchPastGames(`?page=${$event.pageIndex}`);
   }
 }

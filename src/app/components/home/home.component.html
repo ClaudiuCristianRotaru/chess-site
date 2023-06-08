@@ -12,7 +12,7 @@
     </div>
     <div class="users">
         <div class="game-card" *ngFor="let user of users | async">
-            Username: <a [routerLink]="['/profile', user.id]">{{user.username}}</a>
+            Username: <a [routerLink]="['/profile', user.username]">{{user.username}}</a>
             <h2>Email: {{user.email}}</h2>
             <h2>Rating: {{user.rating}}</h2>
             <h2>Date: {{user.creationDate | date : 'medium'}}</h2>
