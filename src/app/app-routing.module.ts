@@ -9,11 +9,13 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
+import { AnalysisComponent } from './analysis/analysis.component';
 
 const routes: Routes = [  
 { path: '', redirectTo:'/home', pathMatch:'full' },
 { path: 'home', component:HomeComponent},
 { path: 'profile/:username', component:ProfileComponent},
+{ path: 'analysis/:id', component:AnalysisComponent},
 { path: 'matchmaking', component:MatchmakingComponent, canActivate: [AuthGuard]},
 { path: 'login', component:LoginComponent, canActivate: [LoggedInGuard]},
 { path: 'register', component:RegisterComponent, canActivate: [LoggedInGuard]},
