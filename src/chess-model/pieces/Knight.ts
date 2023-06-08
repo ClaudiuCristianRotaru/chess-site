@@ -8,12 +8,14 @@ class Knight implements IPiece {
     col: number;
     isWhite: boolean | undefined;
     possibleMoves: Move[] = [];
-    class:string; 
+    class: string;
+    value: number;
     constructor(row: number, col: number, isWhite: boolean) {
         this.row = row;
         this.col = col;
         this.isWhite = isWhite;
-        this.class = isWhite ? "wn":"bn";
+        this.class = isWhite ? "wn" : "bn";
+        this.value = 3;
     }
 
     calculateMoves(board: Board, gameParams: GameParams): void {
@@ -32,7 +34,7 @@ class Knight implements IPiece {
                     virtualBoard.executeMove(move);
                     let kingRow = this.isWhite ? gameParams.whiteKing.row : gameParams.blackKing.row;
                     let kingCol = this.isWhite ? gameParams.whiteKing.col : gameParams.blackKing.col;
-                    if (!virtualBoard.isSquareInCheck([kingRow, kingCol], !this.isWhite))
+                    if (!virtualBoard.isSquareInCheck({ row: kingRow, col: kingCol }, !this.isWhite))
                         this.possibleMoves.push(move);
                 }
                 else {
@@ -43,7 +45,7 @@ class Knight implements IPiece {
                         virtualBoard.executeMove(move);
                         let kingRow = this.isWhite ? gameParams.whiteKing.row : gameParams.blackKing.row;
                         let kingCol = this.isWhite ? gameParams.whiteKing.col : gameParams.blackKing.col;
-                        if (!virtualBoard.isSquareInCheck([kingRow, kingCol], !this.isWhite))
+                        if (!virtualBoard.isSquareInCheck({ row: kingRow, col: kingCol }, !this.isWhite))
                             this.possibleMoves.push(move);
                     }
                 }

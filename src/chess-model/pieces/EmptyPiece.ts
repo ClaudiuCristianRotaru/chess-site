@@ -10,9 +10,11 @@ class Empty implements IPiece {
     isWhite: boolean | undefined;
     possibleMoves: Move[] = [];
     class: string = "ep";
+    value: number;
     constructor(){
         this.row = -1;
         this.col = -1;
+        this.value = 0;
     }
 
     calculateMoves(board: Board, gameParams: GameParams): void {

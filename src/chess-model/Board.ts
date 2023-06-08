@@ -50,13 +50,13 @@ class Board {
         });
     }
 
-    executeTestMove(): void {
-        let move: Move = new Move(this.board[1][4], [3, 4], undefined);
-        this.board[move.piece.row][move.piece.col] = new Empty();
-        move.piece.row = move.endPosition[0];
-        move.piece.col = move.endPosition[1];
-        this.board[move.endPosition[0]][move.endPosition[1]] = move.piece;
-    }
+    // executeTestMove(): void {
+    //     let move: Move = new Move(this.board[1][4], [3, 4], undefined);
+    //     this.board[move.piece.row][move.piece.col] = new Empty();
+    //     move.piece.row = move.endPosition[0];
+    //     move.piece.col = move.endPosition[1];
+    //     this.board[move.endPosition[0]][move.endPosition[1]] = move.piece;
+    // }
 
 
     executeMove(move: Move): void {
@@ -67,11 +67,11 @@ class Board {
         this.board[move.endPosition[0]][move.endPosition[1]] = move.piece;
     }
 
-    isSquareInCheck(coords: [number, number], isWhiteControlled: boolean): boolean {
+    isSquareInCheck(coords: {row: number, col: number}, isWhiteControlled: boolean): boolean {
         //check for pawns
         var direction: number = isWhiteControlled ? -1 : 1;
         try {
-            let currentSquare: IPiece = this.board[coords[0] + direction][coords[1] + 1];
+            let currentSquare: IPiece = this.board[coords.row + direction][coords.col + 1];
             if (!(currentSquare instanceof Empty)) {
                 if (currentSquare.isWhite == isWhiteControlled) {
                     if (currentSquare instanceof Pawn) {
@@ -83,7 +83,7 @@ class Board {
         }
         catch (error) { }
         try {
-            let currentSquare: IPiece = this.board[coords[0] + direction][coords[1] - 1];
+            let currentSquare: IPiece = this.board[coords.row + direction][coords.col - 1];
             if (!(currentSquare instanceof Empty)) {
                 if (currentSquare.isWhite == isWhiteControlled) {
                     if (currentSquare instanceof Pawn) {
@@ -102,10 +102,10 @@ class Board {
         for (let i = 0; i < 4; i++) {
             try {
                 let range: number = 1;
-                let currentSquare: IPiece = this.board[coords[0] + range * dirY[i]][coords[1] + range * dirX[i]];
+                let currentSquare: IPiece = this.board[coords.row + range * dirY[i]][coords.col + range * dirX[i]];
                 while (currentSquare instanceof Empty) {
                     range++;
-                    currentSquare = this.board[coords[0] + range * dirY[i]][coords[1] + range * dirX[i]];
+                    currentSquare = this.board[coords.row + range * dirY[i]][coords.col + range * dirX[i]];
                 }
                 if (currentSquare.isWhite != isWhiteControlled)
                     continue;
@@ -132,10 +132,10 @@ class Board {
         for (let i = 0; i < 4; i++) {
             try {
                 let range: number = 1;
-                let currentSquare: IPiece = this.board[coords[0] + range * dirY[i]][coords[1] + range * dirX[i]];
+                let currentSquare: IPiece = this.board[coords.row + range * dirY[i]][coords.col + range * dirX[i]];
                 while (currentSquare instanceof Empty) {
                     range++;
-                    currentSquare = this.board[coords[0] + range * dirY[i]][coords[1] + range * dirX[i]];
+                    currentSquare = this.board[coords.row + range * dirY[i]][coords.col + range * dirX[i]];
                 }
                 if (currentSquare.isWhite != isWhiteControlled)
                     continue;
@@ -161,7 +161,7 @@ class Board {
 
         for (let i = 0; i < 8; i++) {
             try {
-                let currentSquare: IPiece = this.board[coords[0] + dirY[i]][coords[1] + dirX[i]];
+                let currentSquare: IPiece = this.board[coords.row + dirY[i]][coords.col + dirX[i]];
                 if (currentSquare.isWhite != isWhiteControlled)
                     continue;
                 if (currentSquare instanceof Knight) {

@@ -111,13 +111,15 @@ class ChessGame {
 
         this.gameParams.whiteTurn = (FENComponents[1] === "w");
 
+        if (FENComponents.length == 2) return;
+
         this.gameParams.blackShortCastle = FENComponents[2].includes('q');
         this.gameParams.whiteLongCastle = FENComponents[2].includes('Q');
         this.gameParams.blackShortCastle = FENComponents[2].includes('k');
         this.gameParams.whiteShortCastle = FENComponents[2].includes('K');
 
         if (FENComponents[3] != "-") {
-            this.gameParams.enPassantable = [parseInt(FENComponents[3][1]) - 1, this.convertFileToDigit[FENComponents[3][0]]]
+            this.gameParams.enPassantable = { row: parseInt(FENComponents[3][1]) - 1, col: this.convertFileToDigit[FENComponents[3][0]] };
         }
 
         this.gameParams.halfmovesSinceLastPawnOrCapture = parseInt(FENComponents[4]);
@@ -214,55 +216,53 @@ class ChessGame {
         return movesCount;
     }
 
-    checkForGameEnd(forWhite: boolean): void {
+    checkForGameEnd(forWhite: boolean): any {
         {
-            let kingPos: [number, number];
+            let kingPos: { row: number, col: number };
             if (this.gameParams.whiteKing == undefined || this.gameParams.blackKing == undefined) {
-                console.log("game not possible");
-                return;
+                return { result: "Game not possible", message: "Error" };
             }
-            kingPos = !forWhite ? [this.gameParams.whiteKing.row, this.gameParams.whiteKing.col] : [this.gameParams.blackKing.row, this.gameParams.blackKing.col];
+            kingPos = !forWhite ? { row: this.gameParams.whiteKing.row, col: this.gameParams.whiteKing.col } : { row: this.gameParams.blackKing.row, col: this.gameParams.blackKing.col };
 
-            if (this.gameParams.halfmovesSinceLastPawnOrCapture == 50) {
-                console.log("draw by 50 move rule");
+            if (this.gameParams.halfmovesSinceLastPawnOrCapture >= 50) {
+                return { result: "Draw", message: "50-move rule" };
             }
 
             let position = this.getShortPosition();
             console.log(position);
             let count = 0;
             this.gameParams.pastPositions.forEach(pos => {
-                if(pos === position)
+                let posValue = pos;
+                if (posValue == position)
                     count++;
-            })  
+            })
+
             console.log("repetition", count);
-            if(count >= 3) {
-                console.log("draw by 3 fold repetition");
+            if (count >= 3) {
+                return { result: "Draw", message: "Repetition" };
             }
-
-
 
             if (this.chessBoard.isSquareInCheck(kingPos, forWhite)) {
                 if (this.getPossibleMovesNumber(!forWhite) == 0) {
-                    console.log("checkmate");
-                    this.isRunning = false;
+                    return { result: forWhite ? "White win" : "Black win", message: "checkmate" }
                 }
-                else {
-                    console.log("check");
-                }
+                // else {
+                //     console.log("check");
+                // }
             }
             else {
                 if (this.getPossibleMovesNumber(!forWhite) == 0) {
-                    console.log("stalemate");
-                    this.isRunning = false;
+                    return { result: "Draw", message: "Stalemate" }
                 }
             }
-            console.log("continue");
+            return { result: "Continue", message: "" }
         }
 
     }
 
     nextStep(args: number[], promotion = "r"): void {
-
+        console.log("w value", this.getSidePiecesValue(true));
+        console.log("b value", this.getSidePiecesValue(false))
         let pieces: IPiece[]
         if (this.gameParams.whiteTurn) {
             pieces = this.gameParams.whitePieces;
@@ -282,6 +282,7 @@ class ChessGame {
             })
         })
         if (selectedMove) {
+            this.gameParams.pastPositions.push(this.getShortPosition());
             if (!selectedMove.piece.isWhite)
                 this.gameParams.moveNumber++;
             this.gameParams.halfmovesSinceLastPawnOrCapture++;
@@ -296,68 +297,81 @@ class ChessGame {
                     else
                         this.gameParams.whitePieces.splice(this.gameParams.whitePieces.indexOf(selectedMove.capturedPiece), 1);
                 }
-                this.checkPromotion(selectedMove,promotion);
+                this.checkPromotion(selectedMove, promotion);
                 selectedMove = selectedMove.nextMove;
             }
-           
+
             this.calculateMoves();
-            this.gameParams.pastPositions.push(this.getShortPosition());
             this.gameParams.whiteTurn = !this.gameParams.whiteTurn;
             this.chessBoard.print(this.gameParams.whiteTurn);
         }
     }
 
-    checkPromotion(selectedMove:Move, promotion:string) {
-        if(selectedMove.piece instanceof Pawn) {
+    checkPromotion(selectedMove: Move, promotion: string) {
+        if (selectedMove.piece instanceof Pawn) {
             console.log('promoting');
-            if( (selectedMove.endPosition[0] == 7 && selectedMove.piece.isWhite) ||
-                (selectedMove.endPosition[0] == 0 && !selectedMove.piece.isWhite) )
-                {
-                    console.log(selectedMove);
-                    let piece:IPiece;
-                    let color:boolean = selectedMove.piece.isWhite?true:false;
-                    switch(promotion){
-                        case 'q':
-                            piece = new Queen(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
-                            break;
-                        case 'r':
-                            piece = new Rook(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
-                            break;
-                        case 'n':
-                            piece = new Knight(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
-                            break;
-                        case 'b':
-                            piece = new Bishop(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
-                            break;
-                        default:
-                            piece = new Queen(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
-                            break;
-                    }
-                    console.log(piece);
-                    if (this.gameParams.whiteTurn) {
-                        this.gameParams.whitePieces.splice(this.gameParams.whitePieces.indexOf(selectedMove.piece), 1);
-                        this.gameParams.whitePieces.push(piece);
-                       
-                        }
-                    else {
-                        this.gameParams.blackPieces.splice(this.gameParams.blackPieces.indexOf(selectedMove.piece), 1);
-                        this.gameParams.blackPieces.push(piece);}
-                    this.chessBoard.board[selectedMove.endPosition[0]][selectedMove.endPosition[1]] = piece;
-                    console.log(this.gameParams);
+            if ((selectedMove.endPosition[0] == 7 && selectedMove.piece.isWhite) ||
+                (selectedMove.endPosition[0] == 0 && !selectedMove.piece.isWhite)) {
+                console.log(selectedMove);
+                let piece: IPiece;
+                let color: boolean = selectedMove.piece.isWhite ? true : false;
+                switch (promotion) {
+                    case 'q':
+                        piece = new Queen(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
+                        break;
+                    case 'r':
+                        piece = new Rook(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
+                        break;
+                    case 'n':
+                        piece = new Knight(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
+                        break;
+                    case 'b':
+                        piece = new Bishop(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
+                        break;
+                    default:
+                        piece = new Queen(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
+                        break;
                 }
+                console.log(piece);
+                if (this.gameParams.whiteTurn) {
+                    this.gameParams.whitePieces.splice(this.gameParams.whitePieces.indexOf(selectedMove.piece), 1);
+                    this.gameParams.whitePieces.push(piece);
+
+                }
+                else {
+                    this.gameParams.blackPieces.splice(this.gameParams.blackPieces.indexOf(selectedMove.piece), 1);
+                    this.gameParams.blackPieces.push(piece);
+                }
+                this.chessBoard.board[selectedMove.endPosition[0]][selectedMove.endPosition[1]] = piece;
+                console.log(this.gameParams);
+            }
         }
+    }
+
+    getSidePiecesValue(white: boolean) {
+        let result: number = 0;
+        if (white) {
+            this.gameParams.whitePieces.forEach(piece => {
+                result += piece.value;
+            })
+        } else {
+            this.gameParams.blackPieces.forEach(piece => {
+                result += piece.value;
+            })
+        }
+        return result;
     }
 
     updateGameParams(move: Move) {
 
-        this.gameParams.enPassantable = [-1, -1];
+        this.gameParams.enPassantable = { row: -1, col: -1 };
         if (move.piece instanceof Pawn || move.capturedPiece != undefined) {
             this.gameParams.halfmovesSinceLastPawnOrCapture = 0;
         }
 
         if (move.piece instanceof Pawn) {
             if (Math.abs(move.piece.row - move.endPosition[0]) == 2) {
-                this.gameParams.enPassantable = [move.piece.isWhite ? 2 : 5, move.piece.col];
+                this.gameParams.enPassantable = { row: move.piece.isWhite ? 2 : 5, col: move.piece.col };
             }
         }
         if (move.piece instanceof King) {

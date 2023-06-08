@@ -10,11 +10,13 @@ class Rook implements IPiece {
     isWhite: boolean | undefined;
     possibleMoves: Move[] = [];
     class: string;
+    value: number;
     constructor(row: number, col: number, isWhite: boolean) {
         this.row = row;
         this.col = col;
         this.isWhite = isWhite;
-        this.class = isWhite ? "wr":"br";
+        this.class = isWhite ? "wr" : "br";
+        this.value = 5;
     }
 
     calculateMoves(board: Board, gameParams: GameParams): void {
@@ -34,7 +36,7 @@ class Rook implements IPiece {
                     virtualBoard.executeMove(move);
                     let kingRow = this.isWhite ? gameParams.whiteKing.row : gameParams.blackKing.row;
                     let kingCol = this.isWhite ? gameParams.whiteKing.col : gameParams.blackKing.col;
-                    if (!virtualBoard.isSquareInCheck([kingRow, kingCol], !this.isWhite))
+                    if (!virtualBoard.isSquareInCheck({ row: kingRow, col: kingCol }, !this.isWhite))
                         this.possibleMoves.push(move);
                     range++;
                     newRow = this.row + range * dirY[i];
@@ -48,7 +50,7 @@ class Rook implements IPiece {
                     virtualBoard.executeMove(move);
                     let kingRow = this.isWhite ? gameParams.whiteKing.row : gameParams.blackKing.row;
                     let kingCol = this.isWhite ? gameParams.whiteKing.col : gameParams.blackKing.col;
-                    if (!virtualBoard.isSquareInCheck([kingRow, kingCol], !this.isWhite))
+                    if (!virtualBoard.isSquareInCheck({ row: kingRow, col: kingCol }, !this.isWhite))
                         this.possibleMoves.push(move);
                 }
             }

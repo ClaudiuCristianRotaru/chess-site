@@ -9,11 +9,13 @@ class King implements IPiece {
     isWhite: boolean | undefined;
     possibleMoves: Move[] = [];
     class: string;
+    value: number;
     constructor(row: number, col: number, isWhite: boolean) {
         this.row = row;
         this.col = col;
         this.isWhite = isWhite
-        this.class = isWhite ? "wk":"bk";
+        this.class = isWhite ? "wk" : "bk";
+        this.value = 0;
     }
 
     calculateMoves(board: Board, gameParams: GameParams): void {
@@ -30,7 +32,7 @@ class King implements IPiece {
                     virtualBoard.copy(board);
                     let move: Move = new Move(this, [newRow, newCol], undefined);
                     virtualBoard.executeMove(move);
-                    if (!virtualBoard.isSquareInCheck([newRow, newCol], !this.isWhite))
+                    if (!virtualBoard.isSquareInCheck({row:newRow, col:newCol}, !this.isWhite))
                         this.possibleMoves.push(move);
                     currentSquare = board.board[newRow][newCol];
                 } else {
@@ -39,7 +41,7 @@ class King implements IPiece {
                         virtualBoard.copy(board);
                         let move: Move = new Move(this, [newRow, newCol], currentSquare);
                         virtualBoard.executeMove(move);
-                        if (!virtualBoard.isSquareInCheck([newRow, newCol], !this.isWhite))
+                        if (!virtualBoard.isSquareInCheck({row:newRow, col:newCol}, !this.isWhite))
                             this.possibleMoves.push(move);
                     }
                 }
@@ -51,41 +53,41 @@ class King implements IPiece {
         //short castling 
         let shortCastlePossible: boolean = this.isWhite ? gameParams.whiteShortCastle : gameParams.blackShortCastle;
 
-        if( board.isSquareInCheck([this.row,this.col],!this.isWhite) ||
-            board.isSquareInCheck([this.row,this.col + 1],!this.isWhite) ||
-            board.isSquareInCheck([this.row,this.col + 2],!this.isWhite)) {
-                shortCastlePossible = false;
-            }
+        if (board.isSquareInCheck({row: this.row, col: this.col}, !this.isWhite) ||
+            board.isSquareInCheck({row: this.row, col: this.col + 1}, !this.isWhite) ||
+            board.isSquareInCheck({row: this.row, col: this.col + 2}, !this.isWhite)) {
+            shortCastlePossible = false;
+        }
 
-        if( !(board.board[this.row][this.col + 1] instanceof Empty) ||
+        if (!(board.board[this.row][this.col + 1] instanceof Empty) ||
             !(board.board[this.row][this.col + 2] instanceof Empty)) {
-                shortCastlePossible = false;
-            }
+            shortCastlePossible = false;
+        }
 
-        if(shortCastlePossible) {
-            let move: Move = new Move(this,[this.row,this.col + 2], undefined);
-            move.nextMove = new Move(board.board[this.row][this.col + 3],[this.row,this.col + 1], undefined)
+        if (shortCastlePossible) {
+            let move: Move = new Move(this, [this.row, this.col + 2], undefined);
+            move.nextMove = new Move(board.board[this.row][this.col + 3], [this.row, this.col + 1], undefined)
             this.possibleMoves.push(move);
         }
 
         //long castling
         let longCastlePossible: boolean = this.isWhite ? gameParams.whiteLongCastle : gameParams.blackLongCastle;
-        
-        if( board.isSquareInCheck([this.row,this.col],!this.isWhite) ||
-            board.isSquareInCheck([this.row,this.col - 1],!this.isWhite) ||
-            board.isSquareInCheck([this.row,this.col - 2],!this.isWhite)) {
-                longCastlePossible = false;
-            }
 
-        if( !(board.board[this.row][this.col - 1] instanceof Empty) ||
+        if (board.isSquareInCheck({row: this.row, col: this.col}, !this.isWhite) ||
+            board.isSquareInCheck({row: this.row, col: this.col - 1}, !this.isWhite) ||
+            board.isSquareInCheck({row: this.row, col: this.col - 2}, !this.isWhite)) {
+            longCastlePossible = false;
+        }
+
+        if (!(board.board[this.row][this.col - 1] instanceof Empty) ||
             !(board.board[this.row][this.col - 2] instanceof Empty) ||
             !(board.board[this.row][this.col - 3] instanceof Empty)) {
-                longCastlePossible = false;
-            }
+            longCastlePossible = false;
+        }
 
-        if(longCastlePossible) {
-            let move: Move = new Move(this,[this.row,this.col - 2], undefined);
-            move.nextMove = new Move(board.board[this.row][this.col - 4],[this.row,this.col - 1], undefined)
+        if (longCastlePossible) {
+            let move: Move = new Move(this, [this.row, this.col - 2], undefined);
+            move.nextMove = new Move(board.board[this.row][this.col - 4], [this.row, this.col - 1], undefined)
             this.possibleMoves.push(move);
         }
     }
