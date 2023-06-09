@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { GameData } from 'src/app/models/game-data';
-import { GameService } from '../services/game.service';
+import { GameService } from '../../services/game.service';
 import { ActivatedRoute } from '@angular/router';
 import { ChessGame } from 'src/chess-model/ChessGame';
 import { IPiece } from 'src/chess-model/pieces/IPiece';
@@ -17,19 +17,18 @@ export class AnalysisComponent implements OnInit {
   gameData: GameData;
   gamePositions: string[] = [];
   pieces: { piece: IPiece, class: string }[] = [];
-  color: string = "black";
+  whitePov: boolean = true;
   constructor(private activatedRoute: ActivatedRoute, private gameService: GameService) { }
 
   ngOnInit(): void {
     let idParam = this.activatedRoute.snapshot.paramMap.get('id');
-    console.log(idParam)
     this.gameService.getGame(idParam).subscribe({
       next: (x) => {
         this.gameData = x;
         this.gamePositions = JSON.parse(this.gameData.FENS);
         this.refresh();
       },
-      error: (x) => console.log(x)
+      error: (x) => console.error(x)
     });
   }
 
@@ -42,16 +41,15 @@ export class AnalysisComponent implements OnInit {
   }
 
   linkPieces(): void {
-    if (this.color == "") return;
     this.game.gameParams.whitePieces.forEach(piece => {
       this.pieces.push({ 
         piece: piece, 
-        class: `piece ${piece.class} row${piece.row} col${piece.col} ${this.color == "white" ? "" : "inverted"}` })
+        class: `piece ${piece.class} row${piece.row} col${piece.col} ${this.whitePov ? "" : "inverted"}` })
     })
     this.game.gameParams.blackPieces.forEach(piece => {
       this.pieces.push({ 
         piece: piece,
-        class: `piece ${piece.class} row${piece.row} col${piece.col} ${this.color == "white" ? "" : "inverted"}` })
+        class: `piece ${piece.class} row${piece.row} col${piece.col} ${this.whitePov ? "" : "inverted"}` })
     })
   }
 
@@ -65,5 +63,22 @@ export class AnalysisComponent implements OnInit {
     if (this.index <= 0) return;
     this.index--;
     this.refresh();
+  }
+
+  flipBoard() : void {
+    this.whitePov = !this.whitePov;
+    this.refresh();
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+     if(event.key == "ArrowRight") {
+      this.next();
+      return;
+     } 
+     if(event.key == "ArrowLeft") {
+      this.prev();
+      return;
+     }
   }
 }

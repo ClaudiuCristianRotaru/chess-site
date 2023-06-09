@@ -4,6 +4,7 @@ import { GameData } from 'src/app/models/game-data';
 import { GameService } from '../../services/game.service';
 import { UserData } from 'src/app/models/user-data';
 import { UserService } from 'src/app/services/user.service';
+import { SavedGameService } from 'src/app/services/saved-game.service';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +18,7 @@ export class HomeComponent implements OnInit {
   constructor(private gameService: GameService,private userService: UserService) { }
 
   ngOnInit(): void {
+
     this.gameService.getAllGames().subscribe(res =>{
       this.games = new BehaviorSubject<GameData[]>(res);
     });

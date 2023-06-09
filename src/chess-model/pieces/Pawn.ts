@@ -68,7 +68,7 @@ class Pawn implements IPiece {
                         this.possibleMoves.push(move);
                 }
             }
-            if(this.row + direction == gameParams.enPassantable[0] && this.col + 1 == gameParams.enPassantable[1]) {
+            if(this.row + direction == gameParams.enPassantable.row && this.col + 1 == gameParams.enPassantable.col) {
                 let virtualBoard: Board = new Board();
                     virtualBoard.copy(board);
                     let move: Move = new Move(this, [this.row + direction, this.col + 1], board.board[this.row][this.col + 1]);
@@ -94,7 +94,7 @@ class Pawn implements IPiece {
                         this.possibleMoves.push(move);
                 }
             }
-            if(this.row + direction == gameParams.enPassantable[0] && this.col - 1 == gameParams.enPassantable[1]) {
+            if(this.row + direction == gameParams.enPassantable.row && this.col - 1 == gameParams.enPassantable.col) {
                 let virtualBoard: Board = new Board();
                     virtualBoard.copy(board);
                     let move: Move = new Move(this, [this.row + direction, this.col - 1], board.board[this.row][this.col - 1]);

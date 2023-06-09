@@ -28,14 +28,13 @@ export class LoginComponent implements OnInit {
     if(!this.loginForm.valid) return;
     this.loginInProgress = true;
     this.userService.loginUser(this.loginForm.value.username, this.loginForm.value.password).subscribe((response) => {
-      console.log(response);
       this.loginInProgress = false;
       this.router.navigate(['/home']);
       
     }, (err) => {
       this.loginInProgress = false;
-      this.errorMessage = err.message[0];
-      console.log(err);
+      this.errorMessage = err.error.message[0];
+      console.error(err);
     });
   }
 

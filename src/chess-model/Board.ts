@@ -50,15 +50,6 @@ class Board {
         });
     }
 
-    // executeTestMove(): void {
-    //     let move: Move = new Move(this.board[1][4], [3, 4], undefined);
-    //     this.board[move.piece.row][move.piece.col] = new Empty();
-    //     move.piece.row = move.endPosition[0];
-    //     move.piece.col = move.endPosition[1];
-    //     this.board[move.endPosition[0]][move.endPosition[1]] = move.piece;
-    // }
-
-
     executeMove(move: Move): void {
         this.board[move.piece.row][move.piece.col] = new Empty();
         if(move.capturedPiece){
@@ -75,7 +66,6 @@ class Board {
             if (!(currentSquare instanceof Empty)) {
                 if (currentSquare.isWhite == isWhiteControlled) {
                     if (currentSquare instanceof Pawn) {
-                        //console.log("pawn controlled");
                         return true;
                     }
                 }
@@ -87,7 +77,6 @@ class Board {
             if (!(currentSquare instanceof Empty)) {
                 if (currentSquare.isWhite == isWhiteControlled) {
                     if (currentSquare instanceof Pawn) {
-                        //console.log("pawn controlled");
                         return true;
                     }
                 }
@@ -110,15 +99,12 @@ class Board {
                 if (currentSquare.isWhite != isWhiteControlled)
                     continue;
                 if (currentSquare instanceof King && range == 1) {
-                    //console.log("king controlled");
                     return true;
                 }
                 if (currentSquare instanceof Rook) {
-                    //console.log("rook controlled");
                     return true;
                 }
                 if (currentSquare instanceof Queen) {
-                    //console.log("queen controlled");
                     return true;
                 }
             }
@@ -140,15 +126,12 @@ class Board {
                 if (currentSquare.isWhite != isWhiteControlled)
                     continue;
                 if (currentSquare instanceof King && range == 1) {
-                    //console.log("king controlled");
                     return true;
                 }
                 if (currentSquare instanceof Bishop) {
-                    //console.log("bishop controlled");
                     return true;
                 }
                 if (currentSquare instanceof Queen) {
-                    //console.log("queen controlled");
                     return true;
                 }
             }
@@ -165,7 +148,6 @@ class Board {
                 if (currentSquare.isWhite != isWhiteControlled)
                     continue;
                 if (currentSquare instanceof Knight) {
-                    //console.log("knight controlled");
                     return true;
                 }
             }

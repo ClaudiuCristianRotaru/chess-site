@@ -8,7 +8,6 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   ngOnInit(): void {
-    console.log("app component works")
   }
   title = 'chess-site';
 }

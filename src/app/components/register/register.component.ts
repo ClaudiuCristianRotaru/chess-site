@@ -26,7 +26,6 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     this.errorMessage = null;
-    console.log(this.registerForm);
     if(!this.registerForm.valid) return;
     this.registerInProgress = true;
     this.userService.registerUser(this.registerForm.value.username,
@@ -38,7 +37,7 @@ export class RegisterComponent implements OnInit {
         this.router.navigate(['/login']);
       }, (err) => {
         this.errorMessage = err.error.message[0];
-        console.log(err);
+        console.error(err);
         this.registerInProgress = false;
       })
 

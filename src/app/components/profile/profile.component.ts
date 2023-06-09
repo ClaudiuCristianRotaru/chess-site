@@ -5,6 +5,8 @@ import { GameData } from 'src/app/models/game-data';
 import { UserData } from 'src/app/models/user-data';
 import { UserService } from 'src/app/services/user.service';
 import { GameService } from 'src/app/services/game.service';
+import { SavedGameData } from 'src/app/models/saved-game-data';
+import { SavedGameService } from 'src/app/services/saved-game.service';
 
 @Component({
   selector: 'app-profile',
@@ -16,32 +18,56 @@ export class ProfileComponent implements OnInit {
   user?: UserData | null;
   pastGames: GameData[];
   pastGamesCount: number;
+
+  savedGames: SavedGameData[];
+  pastSavedGamesCount: number;
+
   constructor(private activatedRoute:ActivatedRoute,
      private router: Router,
      private userService:UserService,
-     private gameService:GameService) { }
+     private gameService:GameService,
+     private savedGameService:SavedGameService) { }
 
   ngOnInit(): void {
     let usernameParam = this.activatedRoute.snapshot.paramMap.get('username');
     this.userService.getUserByUsername(usernameParam).subscribe({
-      next: (x) => {this.user = x, this.fetchPastGames(`?page=0`), this.fetchGamesCount();}, 
+      next: (x) => {this.user = x, this.fetchData();}, 
       error: (x) => this.router.navigate(['notfound'])});
   }
   
   fetchPastGames(query) {
     this.gameService.getUserGames(this.user.username, query).subscribe({
       next: (x) => { this.pastGames = x; }, 
-      error: (x) => console.log(x)})
+      error: (x) => console.error(x)})
   }
 
   fetchGamesCount() {
     this.gameService.getUserGamesCount(this.user.username).subscribe({
       next: (x) => { this.pastGamesCount = x; }, 
-      error: (x) => console.log(x)})
+      error: (x) => console.error(x)})
+  }
+
+  fetchSavedGames(query) {
+    this.savedGameService.getUserSavedGames(this.user.username, query ).subscribe({
+      next: (x) => { this.savedGames = x; console.log(this.savedGames)},
+      error: (x) => console.error(x)})
+  }
+
+  fetchSavedGamesCount() {
+    this.savedGameService.getUserSavedGamesCount(this.user.username).subscribe({
+      next: (x) => { this.pastSavedGamesCount = x; }, 
+      error: (x) => console.error(x)})
+  }
+
+
+  fetchData() {;
+    this.fetchPastGames(`?page=0`);
+    this.fetchGamesCount();
+    this.fetchSavedGames(`?page=0`);
+    this.fetchSavedGamesCount();
   }
 
   handlePageEvent($event){
-    console.log($event);
     this.fetchPastGames(`?page=${$event.pageIndex}`);
   }
 }

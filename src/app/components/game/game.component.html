@@ -1,5 +1,5 @@
 <div class="main">
-    <h1>HAHAHA</h1>
+    <a [routerLink]="['/profile', whitePov ? player2.username: player1.username]">{{whitePov ? player2.username: player1.username}} ({{whitePov ? player2.rating: player1.rating}})</a>
     <div *ngIf="promotionDialogVisible" style="display: flex; position: absolute; z-index: 1000;">
         <div type="button" (click)="promoteQueen()" class="wq promotion">quen</div>
         <div type="button" (click)="promoteRook()" class="wr promotion">rok</div>
@@ -15,5 +15,6 @@
         [cdkDragFreeDragPosition]="piece.pos"></div>
         <div *ngFor="let move of possibleMoves" [ngClass]="move"></div>
     </div>
-    <h1>RETd</h1>
+    <a [routerLink]="['/profile', !whitePov ? player2.username: player1.username]">{{!whitePov ? player2.username: player1.username}} ({{!whitePov ? player2.rating: player1.rating}})</a>
+    <button (click)="flipBoard()">flip board</button>
 </div>

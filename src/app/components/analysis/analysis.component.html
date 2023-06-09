@@ -1,0 +1,8 @@
+<a [routerLink]="['/profile', whitePov ? gameData.black_player.username : gameData.white_player.username]">{{whitePov ? gameData.black_player.username : gameData.white_player.username}}</a>
+<div class="board" appDisableRightClick>
+    <div *ngFor="let piece of pieces" [ngClass]="piece.class"></div>
+</div>
+<a [routerLink]="['/profile', whitePov ? gameData.white_player.username : gameData.black_player.username]">{{whitePov ? gameData.white_player.username : gameData.black_player.username}}</a>
+<button (click)="prev()">prev</button>
+<button (click)="next()">next</button>
+<button (click)="flipBoard()">flip</button>

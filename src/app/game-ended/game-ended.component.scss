@@ -1,0 +1,16 @@
+:host {
+    display: block;
+    background-color: aqua;
+    height: 50vh;
+    width: 50vw;
+}
+
+.buttons {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    height: 33%;
+}

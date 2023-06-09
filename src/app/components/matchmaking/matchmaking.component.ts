@@ -19,7 +19,7 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
   constructor(private _ngZone: NgZone, private router: Router, private userService: UserService, private gameService: GameService) { }
 
   ngOnInit(): void {
-    this.userService.currentUser.subscribe(x => {this.user = x, this.checkGameExists()});
+    this.userService.currentUser.subscribe(x => {this.user = x, this.checkExistingGameAndRedirect()});
     
     this.socket.on('new match', param => {
       console.log("matched with: " + param.opponentId);
@@ -32,15 +32,12 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
   }
 
   navigateToGame(param:any){ 
-    this.router.navigate(['/game'], { queryParams: {roomId: param.roomId}});
+    this.router.navigate(['/game'], { queryParams: {roomId: param.roomId}, replaceUrl: true});
   }
 
   joinQueue(): void {
     if(!this.user) {return;}
-    this.checkGameExists();
-    this.gameService.getAllGames().subscribe(res => {
-      console.log(res)
-    });
+    this.checkExistingGameAndRedirect();
     console.log("joining queue");
     this.inQueue = true;
     this.socket.emit("joinqueue",  { rating : 1000 + Math.floor(Math.random()*100) , userId: this.user.id }, response =>{
@@ -53,7 +50,7 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
     this.inQueue = false;
   }
 
-  checkGameExists(): void {
+  checkExistingGameAndRedirect(): void {
     this.socket.emit("checkexisting", {userId: this.user.id}, response =>{
       this.router.navigate(['/game'], { queryParams: {roomId: response.id}});
     })

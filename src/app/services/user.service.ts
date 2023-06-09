@@ -20,14 +20,12 @@ export class UserService {
 
    getAllUsers(){
     return this.http.get<UserData[]>('http://localhost:3000/user/users?orderBy=email:desc').pipe(map(user => {
-      console.log(user);
       return user;
     }));
   }
 
   loginUser(username:string, password:string): Observable<UserData> {
     return this.http.post<UserData>('http://localhost:3000/user/login', {username: username, password: password}).pipe(map(user => {
-      console.log(user);
       if(user && user.jwt) {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
@@ -38,7 +36,6 @@ export class UserService {
 
   registerUser(username:string, email:string, password:string, rating:number): Observable<UserData> {
     return this.http.post<UserData>('http://localhost:3000/user/register', {username: username, email: email, password: password, rating: rating}).pipe(map(user=> {
-      console.log(user);
       return user;
     }))
   }

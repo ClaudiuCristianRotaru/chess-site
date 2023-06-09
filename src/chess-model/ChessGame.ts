@@ -44,7 +44,6 @@ class ChessGame {
     setupFromFEN(FEN: string): void {
 
         let FENComponents: string[] = FEN.split(" ");
-        console.log(FENComponents);
 
         let pos: number = 0;
 
@@ -173,15 +172,14 @@ class ChessGame {
         if (castling == "")
             castling = "-";
         outputFEN += castling
-        if (this.gameParams.enPassantable[0] != -1) {
-            outputFEN += ` ${this.convertFileToLetter[this.gameParams.enPassantable[1]]}${this.gameParams.enPassantable[0] + 1} `;
+        if (this.gameParams.enPassantable.row != -1) {
+            outputFEN += ` ${this.convertFileToLetter[this.gameParams.enPassantable.col]}${this.gameParams.enPassantable.row + 1} `;
         }
         else {
             outputFEN += " - ";
         }
-        console.log(this.gameParams);
+
         outputFEN += `${this.gameParams.halfmovesSinceLastPawnOrCapture} ${this.gameParams.moveNumber}`;
-        console.log(outputFEN);
         return outputFEN;
     }
 
@@ -229,7 +227,6 @@ class ChessGame {
             }
 
             let position = this.getShortPosition();
-            console.log(position);
             let count = 0;
             this.gameParams.pastPositions.forEach(pos => {
                 let posValue = pos;
@@ -261,8 +258,6 @@ class ChessGame {
     }
 
     nextStep(args: number[], promotion = "r"): void {
-        console.log("w value", this.getSidePiecesValue(true));
-        console.log("b value", this.getSidePiecesValue(false))
         let pieces: IPiece[]
         if (this.gameParams.whiteTurn) {
             pieces = this.gameParams.whitePieces;
@@ -309,10 +304,8 @@ class ChessGame {
 
     checkPromotion(selectedMove: Move, promotion: string) {
         if (selectedMove.piece instanceof Pawn) {
-            console.log('promoting');
             if ((selectedMove.endPosition[0] == 7 && selectedMove.piece.isWhite) ||
                 (selectedMove.endPosition[0] == 0 && !selectedMove.piece.isWhite)) {
-                console.log(selectedMove);
                 let piece: IPiece;
                 let color: boolean = selectedMove.piece.isWhite ? true : false;
                 switch (promotion) {
@@ -332,7 +325,6 @@ class ChessGame {
                         piece = new Queen(selectedMove.endPosition[0], selectedMove.endPosition[1], color);
                         break;
                 }
-                console.log(piece);
                 if (this.gameParams.whiteTurn) {
                     this.gameParams.whitePieces.splice(this.gameParams.whitePieces.indexOf(selectedMove.piece), 1);
                     this.gameParams.whitePieces.push(piece);
@@ -343,7 +335,6 @@ class ChessGame {
                     this.gameParams.blackPieces.push(piece);
                 }
                 this.chessBoard.board[selectedMove.endPosition[0]][selectedMove.endPosition[1]] = piece;
-                console.log(this.gameParams);
             }
         }
     }
