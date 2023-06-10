@@ -1,18 +1,315 @@
 $piece-size: 12.5%;
 
 :host {
-    display: block;
-    height: 100%;
+    display: flex;
+    flex: 1 1 auto;
     width: 100%;
-    background-color: aqua;
+    background-color: gray;
 }
 
-.promotion {
+.user-card {
+    display: flex;
+    position: relative;
+    background-color: cornflowerblue;
+    padding: 20px;
+}
+
+.chat-display {
+    display: block;
+    background-color: white;
+    height: 100%;
+    padding: 5px;
+    margin: 5px;
+    overflow-y: scroll;
+    word-wrap: break-word;
+}
+
+.chat-container {
+    height: 100%;
+    max-width: 20vw;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(64, 64, 64);
+    margin-inline: 20px;
+    padding: 20px;
+
+}
+
+.message-author {
+    color: darkgreen;
+    font-weight: bold;
+}
+
+.input-message {
+    display: flex;
+}
+
+.game-container {
+    animation: fadeIn 1s;
+    background-color: rgb(64, 64, 64);
+    padding: 20px;
+}
+
+.draggable-element .drag-handle {
+    cursor: grab;
+}
+
+.cdk-drag-dragging {
+    z-index: 1000 !important;
+    cursor: grabbing !important;
+    filter: drop-shadow(7px 7px 7px #414141);
+}
+
+#flip-board-button {
+    background-image: url("https://cdn-icons-png.flaticon.com/512/5637/5637932.png");
+}
+
+#resign-button {
+    background-image: url("https://cdn-icons-png.flaticon.com/512/5077/5077196.png");
+}
+
+#offer-draw-button {
+    background-image: url("https://cdn-icons-png.flaticon.com/512/5592/5592536.png");
+}
+
+#accept-draw-button {
+    background-image: url("https://cdn-icons-png.flaticon.com/512/126/126473.png");
+}
+
+.game-button {
+    margin-inline: 20px;
+    background-color: bisque;
+    background-size: cover;
+    width: 100px;
+    height: 100px;
+}
+
+.game-button:hover {
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+}
+
+
+
+.game-buttons-container {
+    background-color: rgb(64, 64, 64);
+    max-width: 20vw;
+    display: flex;
+    margin: 20px;
+    padding: 5px;
+}
+
+.hide {
+    font-weight: bolder;
+    display: none;
+}
+
+.game-button:hover+.hide {
+    animation: fadeIn 1s;
+    display: block;
+    color: red;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+.promotion-button {
     background-color: maroon;
     display: block;
     width: 100px;
     height: 100px;
-    background-size: 100px 100px;
+    background-size: 100% 100%;
+}
+
+.promotion-dialog {
+    display: flex;
+    position: absolute;
+    z-index: 1001;
+}
+
+.left-div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.right-div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+
+.board {
+    position: relative;
+    display: block;
+    background-image: url("https://www.chess.com/boards/green/150.png");
+    background-size: cover;
+    width: 800px;
+    height: 800px;
+}
+
+.piece {
+    background-size: 100% 100%;
+    cursor: grab;
+    width: $piece-size;
+    height: $piece-size;
+    position: absolute;
+
+}
+
+.timer {
+    position: absolute;
+    right: 20px;
+}
+
+.highlight {
+    transform: translate(40px, -40px);
+    height: 20px;
+    width: 20px;
+    background-color: rgba(#000d9e, 0.5);
+    border-radius: 50%;
+    position: absolute;
+    display: block;
+}
+
+.main {
+    align-items: center;
+    width: 100%;
+}
+
+.row0 {
+    bottom: $piece-size * 0;
+}
+
+.row1 {
+    bottom: $piece-size * 1;
+}
+
+.row2 {
+    bottom: $piece-size * 2;
+}
+
+.row3 {
+    bottom: $piece-size * 3;
+}
+
+.row4 {
+    bottom: $piece-size * 4;
+}
+
+.row5 {
+    bottom: $piece-size * 5;
+}
+
+.row6 {
+    bottom: $piece-size * 6;
+}
+
+.row7 {
+    bottom: $piece-size * 7;
+}
+
+.col0 {
+    left: $piece-size * 0;
+}
+
+.col1 {
+    left: $piece-size * 1;
+}
+
+.col2 {
+    left: $piece-size * 2;
+}
+
+.col3 {
+    left: $piece-size * 3;
+}
+
+.col4 {
+    left: $piece-size * 4;
+}
+
+.col5 {
+    left: $piece-size * 5;
+}
+
+.col6 {
+    left: $piece-size * 6;
+}
+
+.col7 {
+    left: $piece-size * 7;
+}
+
+
+.row0.inverted {
+    bottom: $piece-size * 7;
+}
+
+.row1.inverted {
+    bottom: $piece-size * 6;
+}
+
+.row2.inverted {
+    bottom: $piece-size * 5;
+}
+
+.row3.inverted {
+    bottom: $piece-size * 4;
+}
+
+.row4.inverted {
+    bottom: $piece-size * 3;
+}
+
+.row5.inverted {
+    bottom: $piece-size * 2;
+}
+
+.row6.inverted {
+    bottom: $piece-size * 1;
+}
+
+.row7.inverted {
+    bottom: $piece-size * 0;
+}
+
+.col0.inverted {
+    left: $piece-size * 7;
+}
+
+.col1.inverted {
+    left: $piece-size * 6;
+}
+
+.col2.inverted {
+    left: $piece-size * 5;
+}
+
+.col3.inverted {
+    left: $piece-size * 4;
+}
+
+.col4.inverted {
+    left: $piece-size * 3;
+}
+
+.col5.inverted {
+    left: $piece-size * 2;
+}
+
+.col6.inverted {
+    left: $piece-size * 1;
+}
+
+.col7.inverted {
+    left: $piece-size * 0;
 }
 
 .wp {
@@ -62,166 +359,3 @@ $piece-size: 12.5%;
 .bq {
     background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Chess_qdt45.svg/1024px-Chess_qdt45.svg.png");
 }
-
-.board {
-    position: relative;
-    display: block;
-    background-image: url("https://www.chess.com/boards/green/150.png");
-    background-size: cover;
-    width: 800px;
-    height: 800px;
-}
-
-.piece {
-    background-size: 100px 100px;
-    cursor:grab;
-    //background-color: rgb(205, 74, 209);
-    width: 100px;
-    height: 100px;
-    position: absolute;
-   
-}
-
-.highlight {
-    display: block;
-    outline: solid 5px;
-    outline-color: rgb(0, 0, 255, 20);
-    position: absolute;
-    height: 100px;
-    width: 100px;
-}
-
-.main {
-    height: 100%;
-    width: 100%;
-}
-
-.row0 {
-    bottom:$piece-size * 0;
-}
-
-.row1 {
-    bottom:$piece-size * 1;
-}
-
-.row2 {
-    bottom:$piece-size * 2;
-}
-
-.row3 {
-    bottom:$piece-size * 3;
-}
-
-.row4 {
-    bottom:$piece-size * 4;
-}
-
-.row5 {
-    bottom:$piece-size * 5;
-}
-
-.row6 {
-    bottom:$piece-size * 6;
-}
-
-.row7 {
-    bottom:$piece-size * 7;
-}
-
-.col0 {
-    left:$piece-size * 0;
-}
-
-.col1 {
-    left:$piece-size * 1;
-}
-
-.col2 {
-    left:$piece-size * 2;
-}
-
-.col3 {
-    left:$piece-size * 3;
-}
-
-.col4 {
-    left:$piece-size * 4;
-}
-
-.col5 {
-    left:$piece-size * 5;
-}
-
-.col6 {
-    left:$piece-size * 6;
-}
-
-.col7 {
-    left:$piece-size * 7;
-}
-
-
-.row0.inverted {
-    bottom:$piece-size * 7;
-}
-
-.row1.inverted {
-    bottom:$piece-size * 6;
-}
-
-.row2.inverted{
-    bottom:$piece-size * 5;
-}
-
-.row3.inverted {
-    bottom:$piece-size * 4;
-}
-
-.row4.inverted {
-    bottom:$piece-size * 3;
-}
-
-.row5.inverted{
-    bottom:$piece-size * 2;
-}
-
-.row6.inverted{
-    bottom:$piece-size * 1;
-}
-
-.row7.inverted{
-    bottom:$piece-size * 0;
-}
-
-.col0.inverted {
-    left:$piece-size * 7;
-}
-
-.col1.inverted {
-    left:$piece-size * 6;
-}
-
-.col2.inverted {
-    left:$piece-size * 5;
-}
-
-.col3.inverted {
-    left:$piece-size * 4;
-}
-
-.col4.inverted {
-    left:$piece-size * 3;
-}
-
-.col5.inverted {
-    left:$piece-size * 2;
-}
-
-.col6.inverted {
-    left:$piece-size * 1;
-}
-
-.col7.inverted {
-    left:$piece-size * 0;
-}
-

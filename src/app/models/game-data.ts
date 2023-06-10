@@ -8,4 +8,6 @@ export interface GameData {
     FENS: string;
     chat_logs: string;
     date: Date;
+    whiteRating: number;
+    blackRating: number;
 }

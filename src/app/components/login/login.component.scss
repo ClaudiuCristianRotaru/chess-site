@@ -1,27 +1,35 @@
 .form {
-    margin: 20% auto;
-    display: table;
+    color: white;
+    max-width: 30%;
+    margin: 10% auto;
+    display: block;
     background-color: rgb(52, 85, 145, 60);
     padding: 10px;
+    word-wrap: break-word;
 }
 
 #btn {
-    background-color: aliceblue;
     color: black;
+    display: table-row;
+    background-color: rgb(255, 255, 255);
+}
+
+::ng-deep .mat-focused .mat-form-field-label {
+    color: white !important;
+}
+
+::ng-deep.mat-form-field-underline {
+    background-color: white !important;
+}
+
+::ng-deep.mat-form-field-ripple {
+    background-color: white !important;
 }
 
 input {
     display: table-row;
-    color: white;
-    background-color: rgb(51, 51, 51);
-}
-
-.inline-input{
-    display: table-cell;
-}
-
-label{
-    display: table-row;
+    color: black;
+    background-color: rgb(255, 255, 255);
 }
 
 .error {
@@ -30,12 +38,26 @@ label{
     outline-color: red;
 }
 
+.text-field {
+    padding: 5px;
+    font-size: 1.5em;
+    width: 100%;
+}
+
+label {
+    display: table-row;
+}
+
+
 small {
     margin-top: 0px;
     color: rgb(248, 153, 0);
 }
 
-.invalid-input {
-    color: rgb(248, 153, 0);
-    font-size: small;
+::ng-deep .mat-form-field-wrapper{
+    margin-bottom: -1em;
+ }
+
+.mat-radio-button {
+    margin-left: 16px;
 }

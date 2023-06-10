@@ -8,6 +8,7 @@ import { DisableRightClickDirective } from 'src/app/disable-right-click.directiv
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { RouterModule } from '@angular/router';
     HttpClientModule,
     MatInputModule,
     RouterModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonModule
   ]
 })
 export class GameModule { }

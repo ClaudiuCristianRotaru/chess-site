@@ -18,7 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class GameComponent implements OnInit, OnDestroy {
   socket = io("http://192.168.1.2:2112");
   game: ChessGame = new ChessGame();
-  constructor(private http: HttpClient, private router: ActivatedRoute, public dialog: MatDialog ,private _zone: NgZone, private userService: UserService) { }
+  constructor(private http: HttpClient, private router: ActivatedRoute, public dialog: MatDialog, private _zone: NgZone, private userService: UserService) { }
   pieces: { piece: IPiece, class: string, pos: { x: number, y: number } }[] = [];
   possibleMoves: string[] = [];
   gameId: string = "";
@@ -27,9 +27,27 @@ export class GameComponent implements OnInit, OnDestroy {
   promotionDialogVisible: boolean = false;
   moveInWaiting: any;
   user: UserData;
-  player1: UserData; //white
-  player2: UserData; //black
+  player1: UserData = null; //white
+  player2: UserData = null; //black
+  messages: { author: string, content: string }[] = [];
+  wtimer = 180000;
+  btimer = 180000;
+  drawOffered: boolean = false;
   ngOnInit(): void {
+
+    setInterval(() => {
+      if (this.game.gameParams.whiteTurn) {
+        if (this.wtimer > 0) {
+          this.wtimer -= 100;
+        }
+      }
+      else {
+        if (this.btimer > 0) {
+          this.btimer -= 100;
+        }
+      }
+    }, 100)
+
     this.userService.currentUser.subscribe(x => this.user = x);
     this.router.queryParams.subscribe((params) => {
       let obj = { id: params['roomId'] };
@@ -38,25 +56,23 @@ export class GameComponent implements OnInit, OnDestroy {
     let uid = this.user ? this.user.id : null;
 
 
-    const dialogRef = this.dialog.open(GameEndedComponent, {
-      data: {name: "test"},
-    });
     this.socket.emit("join-room", { room: this.gameId, uid: uid }, (response: any) => {
+      this.messages = response.room.chat_logs;
       this.color = response.color;
       this.whitePov = this.color == "white";
-      this.userService.getUserById(response.room.whiteId).subscribe(res => {this.player1 = res; console.log(this.player1)});
-      this.userService.getUserById(response.room.blackId).subscribe(res => {this.player2 = res; console.log(this.player2)});
+      this.userService.getUserById(response.room.whiteId).subscribe(res => { this.player1 = res });
+      this.userService.getUserById(response.room.blackId).subscribe(res => { this.player2 = res });
       this.game.setupFromFEN(response.room.FEN);
       this.game.setupBoard();
       this.game.calculateMoves();
       this.game.gameParams.pastPositions = response.room.pastPositions;
       this.linkPieces();
+
+
     });
 
     this.socket.on("new move", params => {
       this._zone.run(() => {
-        var audio = new Audio('./assets/move.mp3');
-        audio.play();
         if (params.promotion) {
           this.game.nextStep([params.startY, params.startX, params.endY, params.endX], params.promotion);
         }
@@ -69,7 +85,20 @@ export class GameComponent implements OnInit, OnDestroy {
     })
 
     this.socket.on("gameended", params => {
+      
+    const dialogRef = this.dialog.open(GameEndedComponent, {
+      data: { name: "test" },
+    });
       console.log(params)
+    })
+
+    this.socket.on("receive-message", params => {
+      console.log(params);
+      this.messages.push({ author: params.author, content: params.content });
+    })
+
+    this.socket.on("draw-offered", () =>{
+      this.drawOffered = true;
     })
 
   }
@@ -116,7 +145,7 @@ export class GameComponent implements OnInit, OnDestroy {
     };
     let possibleIndexes: { x: number, y: number }[] = [];
     this.pieces[this.draggingIndex].piece.possibleMoves.forEach(move => {
-      let x =  { x: move.endPosition[1], y: move.endPosition[0] };
+      let x = { x: move.endPosition[1], y: move.endPosition[0] };
       possibleIndexes.push(x);
     })
 
@@ -161,18 +190,13 @@ export class GameComponent implements OnInit, OnDestroy {
     else {
       this.executeNextStep(this.moveInWaiting);
     }
-    let gameStatus: any = this.game.checkForGameEnd(!this.game.gameParams.whiteTurn);
-    if (gameStatus.result != "Continue") {
-      console.log(gameStatus);
-      let id = this.gameId.toString();
-      this.socket.emit("gameend", { room: id, status: gameStatus });
 
-    }
     this.possibleMoves = [];
     this.linkPieces();
   }
 
   executeNextStep(move: any, promotion: string = 'none') {
+    this.drawOffered = false;
     let id = this.gameId.toString();
     if (promotion == "none") {
       this.game.nextStep(move);
@@ -182,6 +206,18 @@ export class GameComponent implements OnInit, OnDestroy {
       this.game.nextStep(move, promotion);
       this.socket.emit("make move", { startX: move[1], startY: move[0], endX: move[3], endY: move[2], promotion: promotion, room: id, FEN: this.game.getCurrentPosition(), pastPositions: this.game.gameParams.pastPositions })
     }
+    var audio = new Audio('./assets/move.mp3');
+    audio.play();
+
+    let gameStatus: any = this.game.checkForGameEnd(!this.game.gameParams.whiteTurn);
+    if (gameStatus.result != "Continue") {
+      console.log(gameStatus);
+      let id = this.gameId.toString();
+      this.socket.emit("gameend", { room: id, status: gameStatus });
+
+    }
+
+    this.linkPieces();
   }
 
 
@@ -210,6 +246,35 @@ export class GameComponent implements OnInit, OnDestroy {
     this.possibleMoves = [];
   };
 
+  sendMessage(message): void {
+    if (message.value.length == 0) return;
+    this.messages.push({ author: this.user.username, content: message.value });
+    this.socket.emit("send-message", { author: this.user.username, content: message.value, room: this.gameId });
+    message.value = "";
+  }
+
+  resign(): void {
+    let gameStatus;
+    let id = this.gameId.toString();
+    if(this.color == "white") {
+      gameStatus = { room: id, status:{ result: "Black win", message: "Resignation" }}
+    }
+    if(this.color == "black") {
+      gameStatus = { room: id, status:{ result: "White win", message: "Resignation" }}
+    }
+
+    this.socket.emit("gameend", { room: id, status: gameStatus });
+  }
+
+  offerDraw(): void {
+    this.socket.emit("offer-draw", {room: this.gameId})
+  }
+
+  acceptDraw(): void {
+    let gameStatus = {result: "Draw", message: "By agreement"};
+    let id = this.gameId.toString();
+    this.socket.emit("gameend", { room: id, status: gameStatus });
+  }
   ngOnDestroy(): void {
     this.socket.close();
   }

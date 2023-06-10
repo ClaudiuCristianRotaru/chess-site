@@ -22,6 +22,7 @@ import { AnalysisComponent } from './components/analysis/analysis.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { AnalysisModule } from './components/analysis/analysis.module';
 import { GameEndedComponent } from './game-ended/game-ended.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { GameEndedComponent } from './game-ended/game-ended.component';
     MatFormFieldModule,
     RouterModule,
     MatPaginatorModule,
-    AnalysisModule
+    AnalysisModule,
+    MatButtonModule
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true}],
   bootstrap: [AppComponent]

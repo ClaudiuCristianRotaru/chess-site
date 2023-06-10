@@ -1,23 +1,36 @@
+div {
+    color: white;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
 .game-card{
     min-width: 100%;
     padding: 10px;
     margin-bottom: 5px;
     font-size: 2em;
-    background-color: greenyellow;
+    background-color: rgb(55, 55, 55);
 }
 
 #home {
-    background-color: aquamarine;
+    padding: 20px;
+    background-color: gray;
     width: 100%;
     display: flex;
 }
 .games {
-    padding: 10px;
-    background-color: crimson;
+    outline-style: solid;
+    outline-color: #2e054b;
+    outline-width: 5px;
     min-width: 40%;
 }
 .users {
+    outline-style: solid;
+    outline-color: #910def;
+    outline-width: 5px;
     padding: 10px;
-    background-color: cadetblue;
     min-width: 40%;
 }

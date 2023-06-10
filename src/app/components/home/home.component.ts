@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit {
 
     this.gameService.getAllGames().subscribe(res =>{
       this.games = new BehaviorSubject<GameData[]>(res);
+      console.log(res);
     });
 
     this.userService.getAllUsers().subscribe(res =>{

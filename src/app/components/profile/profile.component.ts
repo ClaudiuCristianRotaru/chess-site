@@ -29,10 +29,12 @@ export class ProfileComponent implements OnInit {
      private savedGameService:SavedGameService) { }
 
   ngOnInit(): void {
-    let usernameParam = this.activatedRoute.snapshot.paramMap.get('username');
-    this.userService.getUserByUsername(usernameParam).subscribe({
-      next: (x) => {this.user = x, this.fetchData();}, 
-      error: (x) => this.router.navigate(['notfound'])});
+    this.activatedRoute.params.subscribe(val => {
+      this.userService.getUserByUsername(val['username']).subscribe({
+        next: (x) => {this.user = x, this.fetchData();}, 
+        error: (x) => this.router.navigate(['notfound'])});
+    })
+
   }
   
   fetchPastGames(query) {

@@ -1,18 +1,23 @@
 <nav class="mast flex-container">
-  <div id="nav-logo">Logo</div>
+  <div class="logo-container">
+    <a id="logo" mat-button routerLink="home"></a>
+  </div>
   <div id="menu">
     <ul>
-      <a routerLink="home" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a>
-      <a routerLink="profile" routerLinkActive="active" ariaCurrentWhenActive="page">Profile</a>
-      <a routerLink="matchmaking" routerLinkActive="active" ariaCurrentWhenActive="page">Find Match</a>
-      <div class="authentication-buttons" *ngIf="!user">
-        <a routerLink="login" ariaCurrentWhenActive="page">Login</a>
-        <a routerLink="register" ariaCurrentWhenActive="page">Register</a>
-      </div>
+      <a mat-button routerLink="home" routerLinkActive="active" ariaCurrentWhenActive="page">Home</a>
+      <a mat-button [routerLink]="['/profile', user ? user.username : null]" routerLinkActive="active" ariaCurrentWhenActive="page">Profile</a>
+      <a mat-button routerLink="matchmaking" routerLinkActive="active" ariaCurrentWhenActive="page">Find Match</a>
+
     </ul>
   </div>
-  <div *ngIf="user" id="logged-user-info">
-    Logged in as: <a [routerLink]="['/profile',user.username]">{{user.username}}</a><br> {{user.id}}
-    <button type="button" (click)="logout()">Logout</button>
+  <div class="authentication-buttons" *ngIf="!user">
+    <a mat-button routerLink="login" ariaCurrentWhenActive="page">Login</a>
+    <a mat-button routerLink="register" ariaCurrentWhenActive="page">Register</a>
   </div>
+  <div *ngIf="user" id="logged-user-card">
+    <div class="user-data"><a [routerLink]="['/profile',user.username]">{{user.username}}</a></div>
+    <button mat-fab type="button" id="logout-button" (click)="logout()"></button>
+  </div>
+ 
+
 </nav>

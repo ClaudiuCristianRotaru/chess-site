@@ -40,7 +40,7 @@ class Pawn implements IPiece {
         //2 move
         try {
             var startRank = this.isWhite ? 1 : 6;
-            if (this.row == startRank && this.possibleMoves.length == 1) {
+            if (this.row == startRank && board.board[this.row + direction][this.col] instanceof Empty) {
                 if (board.board[this.row + 2 * direction][this.col] instanceof Empty) {
                     let virtualBoard: Board = new Board();
                     virtualBoard.copy(board);

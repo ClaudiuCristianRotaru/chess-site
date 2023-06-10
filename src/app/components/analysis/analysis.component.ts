@@ -56,12 +56,16 @@ export class AnalysisComponent implements OnInit {
   next() : void {
     if (this.index >= this.gamePositions.length  - 1) return;
     this.index++;
-    this.refresh()
+    var audio = new Audio('./assets/move.mp3');
+    audio.play();
+    this.refresh();
   }
 
   prev() : void {
     if (this.index <= 0) return;
     this.index--;
+    var audio = new Audio('./assets/move.mp3');
+    audio.play();
     this.refresh();
   }
 

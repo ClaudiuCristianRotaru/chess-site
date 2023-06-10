@@ -1,13 +1,12 @@
 <div id="home">
     <div class="games">
         <div class="game-card" *ngFor="let game of games | async">
-            <a [routerLink]="['/analysis', game.id]">{{game.id}}</a>
-            <h2>Game result: {{game.result}}</h2>
-            <h2>Date: {{game.date | date : 'medium'}}</h2>
-            <h2><a [routerLink]="['/profile', game.white_player.username]">{{game.white_player.username}}</a>
-                ({{game.white_player.rating}}) vs <a
-                    [routerLink]="['/profile', game.black_player.username]">{{game.black_player.username}}</a>
-                ({{game.black_player.rating}})</h2>
+            <a [routerLink]="['/analysis', game.id]">
+            <h2>📅: {{game.date | date : 'short'}}</h2>
+            <h2>⚪ <a [routerLink]="['/profile', game.white_player.username]">{{game.white_player.username}}</a>
+                ({{game.whiteRating}}) {{game.result == "White win" ? "🏆" : ""}} {{game.result == "Draw" ? "½" : ""}}</h2>
+            <h2>⚫ <a [routerLink]="['/profile', game.black_player.username]">{{game.black_player.username}}</a>
+                ({{game.blackRating}}) {{game.result == "Black win" ? "🏆" : ""}} {{game.result == "Draw" ? "½" : ""}}</h2></a>
         </div>
     </div>
     <div class="users">

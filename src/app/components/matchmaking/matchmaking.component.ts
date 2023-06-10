@@ -2,7 +2,6 @@ import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { io } from 'socket.io-client';
 import { UserData } from 'src/app/models/user-data';
-import { JwtService } from 'src/app/services/jwt.service';
 import { UserService } from 'src/app/services/user.service';
 import { GameService } from '../../services/game.service';
 

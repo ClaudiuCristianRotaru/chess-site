@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
-import { JwtService } from './jwt.service';
 import { UserData } from '../models/user-data';
 
 @Injectable({
@@ -12,7 +11,7 @@ export class UserService {
   private currentUserSubject: BehaviorSubject<UserData>;
   currentUser: Observable<UserData>;
 
-  constructor(private http:HttpClient, private jwtService:JwtService) {
+  constructor(private http:HttpClient) {
 
     this.currentUserSubject = new BehaviorSubject<UserData>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
