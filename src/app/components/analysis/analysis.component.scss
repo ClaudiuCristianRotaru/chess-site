@@ -1,10 +1,309 @@
 $piece-size: 12.5%;
 
-:host {
-    display: block;
-    height: 100%;
+
+.fen-container {
+    word-wrap: break-word;
     width: 100%;
-    background-color: rgb(9, 153, 33);
+    display: block;
+    background-color: white;
+    color: black;
+    overflow-x: clip;
+}
+:host {
+    display: flex;
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+@media screen and (max-width: 1000px) {
+    :host {
+        flex-direction: column;
+    }
+    .right-div {
+        max-width: 100% !important;
+    }
+}
+
+.user-card {
+    display: flex;
+    position: relative;
+    padding: 20px;
+}
+
+.game-container {
+    animation: fadeIn 1s;
+    background-color: rgb(64, 64, 64);
+    padding-inline: 20px;
+}
+
+
+#flip-board-button {
+    background-image: url("https://cdn-icons-png.flaticon.com/512/5637/5637932.png");
+}
+
+
+.game-button {
+    margin: 20px;
+    background-color: white;
+    background-size: cover;
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+}
+
+.game-button:hover {
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+}
+
+
+
+.game-buttons-container {
+    background-color: rgb(64, 64, 64);
+    display: flex;
+    padding: 5px;
+    flex-shrink: initial;
+}
+
+.hide {
+    pointer-events: none;
+    font-size: 0ch;
+    color: purple;
+    z-index: 1000;
+    font-weight: bolder;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.game-button:hover {
+    animation: changeBackground 0.5s;
+    background-color: rgb(black, 0.3 );;
+}
+.game-button:hover+.hide {
+    animation: fadeIn 1.5s;
+    font-size: 2ch;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
+@keyframes changeBackground {
+    from {background-color: white;}
+    to {background-color: rgb(black, 0.3 );}
+  }
+
+.left-div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.right-div {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 25vw;
+    margin: 20px;
+}
+
+.game-note {
+    font-size: 3ch;
+    height: fit-content;
+    width: 100%;
+    overflow-x: auto;
+    margin: auto 0;
+}
+
+
+.board {
+    position: relative;
+    display: block;
+    background-image: url("https://www.chess.com/boards/green/150.png");
+    background-size: cover;
+    width: 800px;
+    height: 800px;
+}
+
+.piece {
+    animation-delay: 1s;
+    background-size: 100% 100%;
+    width: $piece-size;
+    height: $piece-size;
+    position: absolute;
+
+}
+
+.main {
+    color: white;
+    margin: 20px;
+    align-items: center;
+    width: fit-content;
+}
+
+.iterate-move {
+    background-color: white;
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+}
+
+#prev{
+    background-image: url("https://cdn-icons-png.flaticon.com/512/507/507257.png");
+}
+
+#next{
+    background-image: url("https://cdn-icons-png.flaticon.com/512/271/271226.png");
+}
+
+#save{
+    background-image: url("https://cdn-icons-png.flaticon.com/512/1828/1828970.png");
+}
+
+#unsave {
+    background-image: url("https://cdn-icons-png.flaticon.com/512/1828/1828614.png");;
+}
+
+.main a {
+    font-size: 3ch;
+    font-weight: bold;
+    color: white;
+}
+
+.row0 {
+    bottom: $piece-size * 0;
+}
+
+.row1 {
+    bottom: $piece-size * 1;
+}
+
+.row2 {
+    bottom: $piece-size * 2;
+}
+
+.row3 {
+    bottom: $piece-size * 3;
+}
+
+.row4 {
+    bottom: $piece-size * 4;
+}
+
+.row5 {
+    bottom: $piece-size * 5;
+}
+
+.row6 {
+    bottom: $piece-size * 6;
+}
+
+.row7 {
+    bottom: $piece-size * 7;
+}
+
+.col0 {
+    left: $piece-size * 0;
+}
+
+.col1 {
+    left: $piece-size * 1;
+}
+
+.col2 {
+    left: $piece-size * 2;
+}
+
+.col3 {
+    left: $piece-size * 3;
+}
+
+.col4 {
+    left: $piece-size * 4;
+}
+
+.col5 {
+    left: $piece-size * 5;
+}
+
+.col6 {
+    left: $piece-size * 6;
+}
+
+.col7 {
+    left: $piece-size * 7;
+}
+
+
+.row0.inverted {
+    bottom: $piece-size * 7;
+}
+
+.row1.inverted {
+    bottom: $piece-size * 6;
+}
+
+.row2.inverted {
+    bottom: $piece-size * 5;
+}
+
+.row3.inverted {
+    bottom: $piece-size * 4;
+}
+
+.row4.inverted {
+    bottom: $piece-size * 3;
+}
+
+.row5.inverted {
+    bottom: $piece-size * 2;
+}
+
+.row6.inverted {
+    bottom: $piece-size * 1;
+}
+
+.row7.inverted {
+    bottom: $piece-size * 0;
+}
+
+.col0.inverted {
+    left: $piece-size * 7;
+}
+
+.col1.inverted {
+    left: $piece-size * 6;
+}
+
+.col2.inverted {
+    left: $piece-size * 5;
+}
+
+.col3.inverted {
+    left: $piece-size * 4;
+}
+
+.col4.inverted {
+    left: $piece-size * 3;
+}
+
+.col5.inverted {
+    left: $piece-size * 2;
+}
+
+.col6.inverted {
+    left: $piece-size * 1;
+}
+
+.col7.inverted {
+    left: $piece-size * 0;
 }
 
 .wp {
@@ -54,155 +353,3 @@ $piece-size: 12.5%;
 .bq {
     background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Chess_qdt45.svg/1024px-Chess_qdt45.svg.png");
 }
-
-.board {
-    display: block;
-    background-image: url("https://www.chess.com/boards/green/150.png");
-    background-size: cover;
-    width: 800px;
-    height: 800px;
-    position: relative;
-}
-
-.piece {
-    background-size: 100px 100px;
-    width: 100px;
-    height: 100px;
-    position: absolute;
-   
-}
-
-button{
-    width: 100px;
-    height: 100px;
-}
-
-.row0 {
-    bottom:$piece-size * 0;
-}
-
-.row1 {
-    bottom:$piece-size * 1;
-}
-
-.row2 {
-    bottom:$piece-size * 2;
-}
-
-.row3 {
-    bottom:$piece-size * 3;
-}
-
-.row4 {
-    bottom:$piece-size * 4;
-}
-
-.row5 {
-    bottom:$piece-size * 5;
-}
-
-.row6 {
-    bottom:$piece-size * 6;
-}
-
-.row7 {
-    bottom:$piece-size * 7;
-}
-
-.col0 {
-    left:$piece-size * 0;
-}
-
-.col1 {
-    left:$piece-size * 1;
-}
-
-.col2 {
-    left:$piece-size * 2;
-}
-
-.col3 {
-    left:$piece-size * 3;
-}
-
-.col4 {
-    left:$piece-size * 4;
-}
-
-.col5 {
-    left:$piece-size * 5;
-}
-
-.col6 {
-    left:$piece-size * 6;
-}
-
-.col7 {
-    left:$piece-size * 7;
-}
-
-
-.row0.inverted {
-    bottom:$piece-size * 7;
-}
-
-.row1.inverted {
-    bottom:$piece-size * 6;
-}
-
-.row2.inverted{
-    bottom:$piece-size * 5;
-}
-
-.row3.inverted {
-    bottom:$piece-size * 4;
-}
-
-.row4.inverted {
-    bottom:$piece-size * 3;
-}
-
-.row5.inverted{
-    bottom:$piece-size * 2;
-}
-
-.row6.inverted{
-    bottom:$piece-size * 1;
-}
-
-.row7.inverted{
-    bottom:$piece-size * 0;
-}
-
-.col0.inverted {
-    left:$piece-size * 7;
-}
-
-.col1.inverted {
-    left:$piece-size * 6;
-}
-
-.col2.inverted {
-    left:$piece-size * 5;
-}
-
-.col3.inverted {
-    left:$piece-size * 4;
-}
-
-.col4.inverted {
-    left:$piece-size * 3;
-}
-
-.col5.inverted {
-    left:$piece-size * 2;
-}
-
-.col6.inverted {
-    left:$piece-size * 1;
-}
-
-.col7.inverted {
-    left:$piece-size * 0;
-}
-

@@ -27,27 +27,14 @@ export class GameComponent implements OnInit, OnDestroy {
   promotionDialogVisible: boolean = false;
   moveInWaiting: any;
   user: UserData;
+ 
   player1: UserData = null; //white
   player2: UserData = null; //black
   messages: { author: string, content: string }[] = [];
-  wtimer = 180000;
-  btimer = 180000;
+  wtimer = 3000;
+  btimer = 2000;
   drawOffered: boolean = false;
   ngOnInit(): void {
-
-    setInterval(() => {
-      if (this.game.gameParams.whiteTurn) {
-        if (this.wtimer > 0) {
-          this.wtimer -= 100;
-        }
-      }
-      else {
-        if (this.btimer > 0) {
-          this.btimer -= 100;
-        }
-      }
-    }, 100)
-
     this.userService.currentUser.subscribe(x => this.user = x);
     this.router.queryParams.subscribe((params) => {
       let obj = { id: params['roomId'] };
@@ -60,6 +47,8 @@ export class GameComponent implements OnInit, OnDestroy {
       this.messages = response.room.chat_logs;
       this.color = response.color;
       this.whitePov = this.color == "white";
+      this.wtimer = response.room.whiteTime;
+      this.btimer = response.room.blackTime;
       this.userService.getUserById(response.room.whiteId).subscribe(res => { this.player1 = res });
       this.userService.getUserById(response.room.blackId).subscribe(res => { this.player2 = res });
       this.game.setupFromFEN(response.room.FEN);
@@ -67,11 +56,10 @@ export class GameComponent implements OnInit, OnDestroy {
       this.game.calculateMoves();
       this.game.gameParams.pastPositions = response.room.pastPositions;
       this.linkPieces();
-
-
+      this.initTimer();
     });
 
-    this.socket.on("new move", params => {
+    this.socket.on("new-move", params => {
       this._zone.run(() => {
         if (params.promotion) {
           this.game.nextStep([params.startY, params.startX, params.endY, params.endX], params.promotion);
@@ -79,21 +67,20 @@ export class GameComponent implements OnInit, OnDestroy {
         else {
           this.game.nextStep([params.startY, params.startX, params.endY, params.endX])
         }
+        this.wtimer = params.whiteTime;
+        this.btimer = params.blackTime;
         this.linkPieces();
       })
 
     })
 
-    this.socket.on("gameended", params => {
-      
-    const dialogRef = this.dialog.open(GameEndedComponent, {
-      data: { name: "test" },
-    });
-      console.log(params)
+    this.socket.on("game-ended", params => {
+      const dialogRef = this.dialog.open(GameEndedComponent, {
+        data: { gameId: this.gameId , status: params.status },disableClose:true,
+      });
     })
 
     this.socket.on("receive-message", params => {
-      console.log(params);
       this.messages.push({ author: params.author, content: params.content });
     })
 
@@ -101,6 +88,22 @@ export class GameComponent implements OnInit, OnDestroy {
       this.drawOffered = true;
     })
 
+  }
+
+  initTimer():void {
+    let timerWorker = new Worker(new URL('./timer.worker.ts', import.meta.url));
+    timerWorker.onmessage = () => {
+      if (this.game.gameParams.whiteTurn) {
+        if (this.wtimer > 0) {
+          this.wtimer -= 100;
+        }
+      }
+      else {
+        if (this.btimer > 0) {
+          this.btimer -= 100;
+        }
+      }
+    };
   }
 
   flipBoard(): void {
@@ -200,11 +203,11 @@ export class GameComponent implements OnInit, OnDestroy {
     let id = this.gameId.toString();
     if (promotion == "none") {
       this.game.nextStep(move);
-      this.socket.emit("make move", { startX: move[1], startY: move[0], endX: move[3], endY: move[2], room: id, FEN: this.game.getCurrentPosition(), pastPositions: this.game.gameParams.pastPositions })
+      this.socket.emit("make-move", { startX: move[1], startY: move[0], endX: move[3], endY: move[2], room: id, FEN: this.game.getCurrentPosition(), pastPositions: this.game.gameParams.pastPositions })
     }
     else {
       this.game.nextStep(move, promotion);
-      this.socket.emit("make move", { startX: move[1], startY: move[0], endX: move[3], endY: move[2], promotion: promotion, room: id, FEN: this.game.getCurrentPosition(), pastPositions: this.game.gameParams.pastPositions })
+      this.socket.emit("make-move", { startX: move[1], startY: move[0], endX: move[3], endY: move[2], promotion: promotion, room: id, FEN: this.game.getCurrentPosition(), pastPositions: this.game.gameParams.pastPositions })
     }
     var audio = new Audio('./assets/move.mp3');
     audio.play();
@@ -213,7 +216,7 @@ export class GameComponent implements OnInit, OnDestroy {
     if (gameStatus.result != "Continue") {
       console.log(gameStatus);
       let id = this.gameId.toString();
-      this.socket.emit("gameend", { room: id, status: gameStatus });
+      this.socket.emit("game-end", { room: id, status: gameStatus });
 
     }
 
@@ -257,13 +260,13 @@ export class GameComponent implements OnInit, OnDestroy {
     let gameStatus;
     let id = this.gameId.toString();
     if(this.color == "white") {
-      gameStatus = { room: id, status:{ result: "Black win", message: "Resignation" }}
+      gameStatus = { result: "Black win", message: "Resignation" }
     }
     if(this.color == "black") {
-      gameStatus = { room: id, status:{ result: "White win", message: "Resignation" }}
+      gameStatus = { result: "White win", message: "Resignation" }
     }
 
-    this.socket.emit("gameend", { room: id, status: gameStatus });
+    this.socket.emit("game-end", { room: id, status: gameStatus });
   }
 
   offerDraw(): void {
@@ -271,9 +274,9 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   acceptDraw(): void {
-    let gameStatus = {result: "Draw", message: "By agreement"};
+    let gameStatus = {result: "Draw", message: "Agreement"};
     let id = this.gameId.toString();
-    this.socket.emit("gameend", { room: id, status: gameStatus });
+    this.socket.emit("game-end", { room: id, status: gameStatus });
   }
   ngOnDestroy(): void {
     this.socket.close();

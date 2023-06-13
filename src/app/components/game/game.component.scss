@@ -1,16 +1,14 @@
 $piece-size: 12.5%;
 
-:host {
+#game {
     display: flex;
     flex: 1 1 auto;
     width: 100%;
-    background-color: gray;
 }
 
 .user-card {
     display: flex;
     position: relative;
-    background-color: cornflowerblue;
     padding: 20px;
 }
 
@@ -19,18 +17,15 @@ $piece-size: 12.5%;
     background-color: white;
     height: 100%;
     padding: 5px;
-    margin: 5px;
     overflow-y: scroll;
     word-wrap: break-word;
 }
 
 .chat-container {
     height: 100%;
-    max-width: 20vw;
     display: flex;
     flex-direction: column;
     background-color: rgb(64, 64, 64);
-    margin-inline: 20px;
     padding: 20px;
 
 }
@@ -47,7 +42,7 @@ $piece-size: 12.5%;
 .game-container {
     animation: fadeIn 1s;
     background-color: rgb(64, 64, 64);
-    padding: 20px;
+    padding-inline: 20px;
 }
 
 .draggable-element .drag-handle {
@@ -77,11 +72,12 @@ $piece-size: 12.5%;
 }
 
 .game-button {
-    margin-inline: 20px;
-    background-color: bisque;
+    margin: 20px;
+    background-color: white;
     background-size: cover;
     width: 100px;
     height: 100px;
+    border-radius: 15px;
 }
 
 .game-button:hover {
@@ -92,32 +88,49 @@ $piece-size: 12.5%;
     filter: blur(5px);
 }
 
+::ng-deep .mat-dialog-container {
+    display: block;
+    background-color: rgb(64, 64, 64);
+    color: white;
+}
 
 
 .game-buttons-container {
     background-color: rgb(64, 64, 64);
-    max-width: 20vw;
     display: flex;
-    margin: 20px;
     padding: 5px;
+    flex-shrink: initial;
 }
 
 .hide {
+    pointer-events: none;
+    font-size: 0ch;
+    color: purple;
+    z-index: 1000;
     font-weight: bolder;
-    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
-
+.game-button:hover {
+    animation: changeBackground 0.5s;
+    background-color: rgb(black, 0.3 );;
+}
 .game-button:hover+.hide {
-    animation: fadeIn 1s;
-    display: block;
-    color: red;
+    animation: fadeIn 1.5s;
+    font-size: 3ch;
 }
 
 @keyframes fadeIn {
     0% { opacity: 0; }
     100% { opacity: 1; }
   }
-
+  
+@keyframes changeBackground {
+    from {background-color: white;}
+    to {background-color: rgb(black, 0.3 );}
+  }
 .promotion-button {
     background-color: maroon;
     display: block;
@@ -142,6 +155,8 @@ $piece-size: 12.5%;
     display: flex;
     flex-direction: column;
     width: 100%;
+    max-width: 25vw;
+    margin: 20px;
 }
 
 
@@ -166,6 +181,9 @@ $piece-size: 12.5%;
 .timer {
     position: absolute;
     right: 20px;
+    font-size: 3ch;
+    font-weight: bold;
+    color: white;
 }
 
 .highlight {
@@ -179,8 +197,16 @@ $piece-size: 12.5%;
 }
 
 .main {
+    color: white;
+    margin: 20px;
     align-items: center;
     width: 100%;
+}
+
+.main a {
+    font-size: 3ch;
+    font-weight: bold;
+    color: white;
 }
 
 .row0 {

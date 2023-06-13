@@ -1,5 +1,12 @@
-<p>matchmaking works!</p>
-<div class="uid-input">
-    <button *ngIf="!inQueue" type="button" (click)="joinQueue()">Join queue</button>
-    <button *ngIf="inQueue" type="button" (click)="leaveQueue()">Leave queue</button>
+<div class="matchmaking">
+    <div class="center">
+    <button mat-button class="queue-button" *ngIf="!inQueue" (click)="joinQueue()">Join queue</button>
+    <button mat-button class="queue-button" *ngIf="inQueue" (click)="leaveQueue()">Leave queue</button>
+    <div *ngIf="inQueue" class="queue-info">
+    Searching for opponent <br>
+    Currently in queue: {{queueSize}}
+    <div class="dots-2"></div>
+    </div>
 </div>
+</div>
+

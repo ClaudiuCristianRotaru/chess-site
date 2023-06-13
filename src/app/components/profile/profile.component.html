@@ -1,35 +1,42 @@
-<div class="user-card">
-    <h2>Username: {{user.username}}</h2>
-    <h2>Email: {{user.email}}</h2>
+<div *ngIf="user" class="user-card outline-div">
+    <h1>Username: {{user.username}}</h1>
     <h2>Rating: {{user.rating}}</h2>
-    <h2>Date: {{user.creationDate | date : 'medium'}}</h2>
+    <h2>Games played: {{pastGamesCount}}</h2>
+    <h4>Created on: {{user.creationDate | date : 'dd MMM YYYY'}}</h4>
 </div>
 <div class="profile">
-    <div class="games">
-        <a [routerLink]="['/analysis', game.id]" *ngFor="let game of pastGames">
-            <div class="game-card">
-                <h3>{{game.id}}</h3>
-                <h2>Game result: {{game.result}}</h2>
-                <h2>📅 {{game.date | date : 'medium'}}</h2>
-                <h2><a [routerLink]="['/profile', game.white_player.username]">{{game.white_player.username}}</a>
-                    ({{game.white_player.rating}}) vs <a
-                        [routerLink]="['/profile', game.black_player.username]">{{game.black_player.username}}</a>
-                    ({{game.black_player.rating}})</h2>
-            </div>
-        </a>
-        <mat-paginator #paginator (page)="handlePageEvent($event)" [pageSize]="5" aria-label="Select Page"
+    <div  *ngIf="pastGames" class="list outline-div">
+        <h1 class="list-title">Past games</h1>
+        <div class="card" *ngFor="let game of pastGames">
+            <a [routerLink]="['/analysis', game.id]">
+            <h2>📅: {{game.date | date : 'short'}}</h2>
+            <h2>⚪ <a [routerLink]="['/profile', game.white_player.username]">{{game.white_player.username}}</a>
+                ({{game.whiteRating}}) {{game.result == "White win" ? "🏆" : ""}} {{game.result == "Draw" ? "½" : ""}}</h2>
+            <h2>⚫ <a [routerLink]="['/profile', game.black_player.username]">{{game.black_player.username}}</a>
+                ({{game.blackRating}}) {{game.result == "Black win" ? "🏆" : ""}} {{game.result == "Draw" ? "½" : ""}}</h2></a>
+        </div>
+        <mat-paginator #paginator (page)="handleGamePageEvent($event)" 
+        [pageSize]="gamesPerPage" 
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Select Page"
             [length]="pastGamesCount"></mat-paginator>
     </div>
-    <div class="games">
+    <div *ngIf="savedGames" class="list outline-div">
+        <h1 class="list-title">Saved games</h1>
         <a [routerLink]="['/analysis', game.game.id]" *ngFor="let game of savedGames">
-            <div class="game-card">
-                <h3>{{game.id}}</h3>
-                <h2>Game result: {{game.game.result}}</h2>
+            <div class="card">
                 <h2>📅 {{game.game.date | date : 'medium'}}</h2>
-                <h2>"{{game.note}}"</h2>
+                <h2>⚪ <a [routerLink]="['/profile', game.game.white_player.username]">{{game.game.white_player.username}}</a>
+                    ({{game.game.whiteRating}}) {{game.game.result == "White win" ? "🏆" : ""}} {{game.game.result == "Draw" ? "½" : ""}}</h2>
+                <h2>⚫ <a [routerLink]="['/profile', game.game.black_player.username]">{{game.game.black_player.username}}</a>
+                    ({{game.game.blackRating}}) {{game.game.result == "Black win" ? "🏆" : ""}} {{game.game.result == "Draw" ? "½" : ""}}</h2>
+                <h2>Note: "{{game.note}}"</h2>
             </div>
         </a>
-        <mat-paginator #paginator (page)="handlePageEvent($event)" [pageSize]="5" aria-label="Select Page"
+        <mat-paginator #paginator (page)="handleSavedPageEvent($event)" 
+        [pageSize]="savedGamesPerPage" 
+        [pageSizeOptions]="[5, 10]"
+        aria-label="Select Page"
             [length]="pastSavedGamesCount"></mat-paginator>
     </div>
 </div>

@@ -1,5 +1,6 @@
 <div class="buttons">
-    <button>Save game</button>
-    <button>Report Player</button>
-    <button>Play another</button>
+    <h1>{{data.status.result}} by {{data.status.message}}</h1>
+    <button mat-dialog-close mat-button class="end-button" (click)="navigateToAnalysis()">Go to analysis</button>
+    <button mat-dialog-close mat-button class="end-button" (click)="navigateToMatchmaking()">Play another</button>
+    <button mat-dialog-close mat-button class="end-button" (click)="navigateToHomepage()">Go to homescreen</button>
 </div>

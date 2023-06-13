@@ -1,20 +1,22 @@
 <div id="home">
-    <div class="games">
-        <div class="game-card" *ngFor="let game of games | async">
+    <div class="list">
+        <h1 class="list-title">Daily top 10 highest rated games</h1>
+        <div class="card" *ngFor="let game of games | async">
             <a [routerLink]="['/analysis', game.id]">
             <h2>📅: {{game.date | date : 'short'}}</h2>
             <h2>⚪ <a [routerLink]="['/profile', game.white_player.username]">{{game.white_player.username}}</a>
                 ({{game.whiteRating}}) {{game.result == "White win" ? "🏆" : ""}} {{game.result == "Draw" ? "½" : ""}}</h2>
             <h2>⚫ <a [routerLink]="['/profile', game.black_player.username]">{{game.black_player.username}}</a>
-                ({{game.blackRating}}) {{game.result == "Black win" ? "🏆" : ""}} {{game.result == "Draw" ? "½" : ""}}</h2></a>
+                ({{game.blackRating}}) {{game.result == "Black win" ? "🏆" : ""}} {{game.result == "Draw" ? "½" : ""}}</h2>
+            </a>
         </div>
     </div>
-    <div class="users">
-        <div class="game-card" *ngFor="let user of users | async">
-            Username: <a [routerLink]="['/profile', user.username]">{{user.username}}</a>
-            <h2>Email: {{user.email}}</h2>
-            <h2>Rating: {{user.rating}}</h2>
-            <h2>Date: {{user.creationDate | date : 'medium'}}</h2>
+    <div class="list">
+        <h1 class="list-title">Leaderboard</h1>
+        <div class="card" *ngFor="let user of users | async">
+            <a [routerLink]="['/profile', user.userData.username]">
+            {{user.index}}. {{user.userData.username}} ({{user.userData.rating}})
+             </a>
         </div>
     </div>
 </div>

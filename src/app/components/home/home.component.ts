@@ -14,18 +14,18 @@ import { SavedGameService } from 'src/app/services/saved-game.service';
 export class HomeComponent implements OnInit {
 
   games: BehaviorSubject<GameData[]>;
-  users: BehaviorSubject<UserData[]>;
+  users: BehaviorSubject<{index: number, userData: UserData}[]>;
   constructor(private gameService: GameService,private userService: UserService) { }
 
   ngOnInit(): void {
 
-    this.gameService.getAllGames().subscribe(res =>{
+    this.gameService.getTopGames().subscribe(res =>{
       this.games = new BehaviorSubject<GameData[]>(res);
       console.log(res);
     });
 
     this.userService.getAllUsers().subscribe(res =>{
-      this.users = new BehaviorSubject<UserData[]>(res);
+      this.users = new BehaviorSubject<{index: number, userData: UserData}[]>(res);
     });
   }
 

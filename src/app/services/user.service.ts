@@ -18,7 +18,7 @@ export class UserService {
    }
 
    getAllUsers(){
-    return this.http.get<UserData[]>('http://localhost:3000/user/users?orderBy=email:desc').pipe(map(user => {
+    return this.http.get<{index: number, userData: UserData}[]>('http://localhost:3000/user/users?orderBy=rating:desc').pipe(map(user => {
       return user;
     }));
   }

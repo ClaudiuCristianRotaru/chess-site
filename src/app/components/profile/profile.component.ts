@@ -22,6 +22,9 @@ export class ProfileComponent implements OnInit {
   savedGames: SavedGameData[];
   pastSavedGamesCount: number;
 
+  gamesPerPage: number = 10;
+  savedGamesPerPage: number = 5;
+
   constructor(private activatedRoute:ActivatedRoute,
      private router: Router,
      private userService:UserService,
@@ -37,11 +40,17 @@ export class ProfileComponent implements OnInit {
 
   }
   
-  fetchPastGames(query) {
-    this.gameService.getUserGames(this.user.username, query).subscribe({
+  fetchPastGames(page, pageSize) {
+    this.gameService.getUserGames(this.user.username, page, pageSize).subscribe({
       next: (x) => { this.pastGames = x; }, 
       error: (x) => console.error(x)})
   }
+
+  // fetchGamesPaginate(page){
+  //   this.gameService.getUsersPaginate(this.user.username, page).subscribe({
+  //     next: (x) => { console.log(x); }, 
+  //     error: (x) => console.error(x)})
+  // }
 
   fetchGamesCount() {
     this.gameService.getUserGamesCount(this.user.username).subscribe({
@@ -49,27 +58,34 @@ export class ProfileComponent implements OnInit {
       error: (x) => console.error(x)})
   }
 
-  fetchSavedGames(query) {
-    this.savedGameService.getUserSavedGames(this.user.username, query ).subscribe({
+  fetchSavedGames(page, pageSize) {
+    this.savedGameService.getUserSavedGames(this.user.username, page, pageSize ).subscribe({
       next: (x) => { this.savedGames = x; console.log(this.savedGames)},
       error: (x) => console.error(x)})
   }
 
   fetchSavedGamesCount() {
     this.savedGameService.getUserSavedGamesCount(this.user.username).subscribe({
-      next: (x) => { this.pastSavedGamesCount = x; }, 
+      next: (x) => {  console.log(x); this.pastSavedGamesCount = x; }, 
       error: (x) => console.error(x)})
   }
 
 
   fetchData() {;
-    this.fetchPastGames(`?page=0`);
+    this.fetchPastGames("0", this.gamesPerPage);
     this.fetchGamesCount();
-    this.fetchSavedGames(`?page=0`);
+    this.fetchSavedGames("0", this.savedGamesPerPage);
     this.fetchSavedGamesCount();
+    //this.fetchGamesPaginate("0");
   }
 
-  handlePageEvent($event){
-    this.fetchPastGames(`?page=${$event.pageIndex}`);
+  handleGamePageEvent($event){
+    this.gamesPerPage = $event.pageSize;
+    this.fetchPastGames($event.pageIndex, this.gamesPerPage);
+  }
+
+  handleSavedPageEvent($event){
+    this.savedGamesPerPage = $event.pageSize;
+    this.fetchSavedGames($event.pageIndex, this.savedGamesPerPage);
   }
 }

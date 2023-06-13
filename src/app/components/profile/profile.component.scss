@@ -1,26 +1,41 @@
-.games {
-    padding: 10px;
-    background-color: crimson;
-    min-width: 40%;
+.list {
+    background-color: rgb(37, 37, 37);
+    margin: 20px ;
+    height: fit-content;
+    width: 100%;
+    padding: 5px;
 }
 
-.game-card{
+.card{
     min-width: 100%;
     padding: 10px;
     margin-bottom: 5px;
     font-size: 2em;
-    background-color: greenyellow;
+    background-color: rgb(55, 55, 55);
+}
+
+.card:hover {
+    background-color: #6A0DAD;;
+}
+
+
+.list-title {
+    padding: 5px;
+    font-size: 3em;
+    text-align: center;
 }
 
 .user-card{
-    min-width: 100%;
+    width: 100wv;
     padding: 10px;
-    margin-bottom: 5px;
     font-size: 2em;
-    background-color: turquoise;
+    background-color: rgb(37, 37, 37);
+    margin: 20px;
 }
 a {
     font-size: 1em;
+    color: white;
+    text-decoration: none;
 }
 
 .profile{
@@ -30,3 +45,45 @@ a {
 .game-card a:hover {
     font-size: 1.5em;
 }
+
+div {
+    color: white;
+}
+
+mat-paginator {
+    color: white;
+    background-color: #6A0DAD;
+}
+
+::ng-deep.mat-select-value {
+    color: white;
+}
+
+.outline-div {
+    outline-style: solid;
+    outline-color:  #6A0DAD;;
+    outline-width: 5px;
+}
+
+// a {
+// }
+
+// .game-card{
+
+// }
+
+// #home {
+//     padding: 20px;
+//     width: 100%;
+//     display: flex;
+// }
+// .games {
+// }
+// .users {
+//     margin: 0 auto;
+//     height: fit-content;
+//     outline-style: solid;
+//     outline-color: #910def;
+//     outline-width: 5px;
+//     min-width: 40%;
+// }

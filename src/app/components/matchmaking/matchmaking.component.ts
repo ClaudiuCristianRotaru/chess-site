@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { io } from 'socket.io-client';
 import { UserData } from 'src/app/models/user-data';
 import { UserService } from 'src/app/services/user.service';
-import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'app-matchmaking',
@@ -15,14 +14,13 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
   socket = io("http://192.168.1.2:2112");
   user: UserData | null;
   inQueue: boolean = false;
-  constructor(private _ngZone: NgZone, private router: Router, private userService: UserService, private gameService: GameService) { }
+  queueSize: number = 0
+  constructor(private _ngZone: NgZone, private router: Router, private userService: UserService) { }
 
   ngOnInit(): void {
     this.userService.currentUser.subscribe(x => {this.user = x, this.checkExistingGameAndRedirect()});
     
-    this.socket.on('new match', param => {
-      console.log("matched with: " + param.opponentId);
-      console.log("room: " + param.roomId );
+    this.socket.on('new-match', param => {
       this._ngZone.runOutsideAngular(() => {
           this._ngZone.run(() => { this.navigateToGame(param) });
       });
@@ -35,22 +33,25 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
   }
 
   joinQueue(): void {
-    if(!this.user) {return;}
     this.checkExistingGameAndRedirect();
-    console.log("joining queue");
+    this.userService.getUserById(this.user.id).subscribe(x => {
+      console.log(x.rating);
+      this.socket.emit("join-queue",  { rating : x.rating , userId: this.user.id }, response =>{
+        this.queueSize = response.queueLength;
+      } );
+    })
+
+
     this.inQueue = true;
-    this.socket.emit("joinqueue",  { rating : 1000 + Math.floor(Math.random()*100) , userId: this.user.id }, response =>{
-      console.log(`Currently in queue ${response.queueLength}`)
-    } );
   }
 
   leaveQueue(): void {
-    this.socket.emit("leavequeue");
+    this.socket.emit("leave-queue");
     this.inQueue = false;
   }
 
   checkExistingGameAndRedirect(): void {
-    this.socket.emit("checkexisting", {userId: this.user.id}, response =>{
+    this.socket.emit("check-existing", {userId: this.user.id}, response =>{
       this.router.navigate(['/game'], { queryParams: {roomId: response.id}});
     })
   }

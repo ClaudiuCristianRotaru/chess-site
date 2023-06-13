@@ -1,0 +1,12 @@
+:host {
+    height: 100%;
+    display: flex;
+    background-image: url("../../../assets/image-broken.svg");
+    background-size: cover;
+}
+
+p {
+    color: white;
+    margin: 20% auto;
+    font-size: 6em;
+}

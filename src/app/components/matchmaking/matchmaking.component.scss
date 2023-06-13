@@ -1,3 +1,34 @@
-.uid-input {
+.matchmaking {
+    color:white;
+    height: 100%;
+    width: 100%;
     display: flex;
 }
+
+.queue-button {
+    font-size: 5ch;
+    width: 100%;
+    height: 50%;
+    background-color: #6A0DAD;
+    margin: auto;
+}
+
+.queue-info {
+    margin: auto;
+    width: fit-content;
+}
+
+.center{
+    width: 30%;
+    height: 20%;
+    margin: auto;
+}
+
+.dots-2 {
+    width: 5em;
+    margin: auto;
+    aspect-ratio: 4;
+    background: radial-gradient(circle closest-side,#ffffff 90%,#ffffff00) 0/calc(100%/3) 100% no-repeat;
+    animation: d2 2.5s steps(3) infinite;
+  }
+  @keyframes d2 {to{background-position: 150%}}

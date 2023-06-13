@@ -1,5 +1,7 @@
 <div class="form">
-    <h1>Login Form</h1>
+    <div>
+        <h1>Login Form</h1>
+    </div>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" #localForm="ngForm">
         <div>
             <mat-form-field>
@@ -27,7 +29,7 @@
             </small>
         </div>
         <div>
-            <input type="submit" value="Submit" id="btn">
+            <button type="submit" mat-button value="Submit" id="btn">Login</button>
             <h1 *ngIf="loginInProgress">logging in ...</h1>
         </div>
         <div class="invalid-input" *ngIf="errorMessage">

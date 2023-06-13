@@ -1,8 +1,59 @@
-<a [routerLink]="['/profile', whitePov ? gameData.black_player.username : gameData.white_player.username]">{{whitePov ? gameData.black_player.username : gameData.white_player.username}}</a>
-<div class="board" appDisableRightClick>
-    <div *ngFor="let piece of pieces" [ngClass]="piece.class"></div>
+<div class="left-div">
+
 </div>
-<a [routerLink]="['/profile', whitePov ? gameData.white_player.username : gameData.black_player.username]">{{whitePov ? gameData.white_player.username : gameData.black_player.username}}</a>
-<button (click)="prev()">prev</button>
-<button (click)="next()">next</button>
-<button (click)="flipBoard()">flip</button>
+<div class="main">
+    <div *ngIf="gameData" class="game-container">
+    <div class="profile" class="user-card">
+        <a [routerLink]="['/profile', whitePov ? gameData.black_player.username : gameData.white_player.username]">
+            {{whitePov ? gameData.black_player.username : gameData.white_player.username}}
+            ({{whitePov ? gameData.blackRating : gameData.whiteRating}})</a>
+    </div>
+    <div class="board" appDisableRightClick>
+        <div *ngFor="let piece of pieces" [ngClass]="piece.class"></div>
+    </div>
+    <div class="user-card">
+        <a [routerLink]="['/profile', whitePov ? gameData.white_player.username : gameData.black_player.username]">
+            {{whitePov ? gameData.white_player.username : gameData.black_player.username}}
+            ({{whitePov ? gameData.whiteRating : gameData.blackRating}})</a>
+    </div>
+</div>
+</div>
+<div class="right-div">
+    <div></div>
+    <div class="game-buttons-container">
+        <div style="position: relative;">
+            <button mat-button class="game-button" id="flip-board-button" (click)="flipBoard()"></button>
+            <h3 class="hide">Flip board</h3>
+        </div>
+    </div>
+    <div *ngIf="user" class="game-buttons-container">
+        <div *ngIf="!isSaved" style="display: flex;">
+            <div style="position: relative; display: flex;">
+            <button  mat-button class="game-button" id="save" (click)="save(note.value)"></button>
+            <h3 class="hide">Favorite</h3>
+            
+            </div>
+            <input #note class="game-note" placeholder="Enter a game note">
+        </div>
+        <div *ngIf="isSaved" style="position: relative;">
+            <button mat-button class="game-button" id="unsave" (click)="unsave()"></button>
+            <h3 class="hide">Unsave</h3>
+        </div>
+    </div>
+    <div class="game-buttons-container">
+        <div>
+            <button mat-button class="iterate-move" id="prev" (click)="prev()"></button>
+
+        </div>
+        <div>
+            <button mat-button class="iterate-move" id="next" (click)="next()"></button>
+        </div>
+    </div>
+
+    <div class="game-buttons-container"> 
+        FEN: 
+        <div class="fen-container">
+            {{gamePositions[index].split(" ")[0]}}
+        </div>
+    </div>
+</div>

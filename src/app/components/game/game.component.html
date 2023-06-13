@@ -1,69 +1,73 @@
-<div class="left-div">
+<div *ngIf="player1 && player2" id="game">
+    <div class="left-div">
 
-</div>
-<div class="main">
-    <div *ngIf="player1 && player2" class="game-container">
-        <div class="profile" class="user-card">
-            <a [routerLink]="['/profile', whitePov ? player2.username: player1.username]">{{whitePov ? player2.username:
-                player1.username}} ({{whitePov ? player2.rating: player1.rating}})</a>
-            <div *ngIf="whitePov" class="timer">{{btimer| date:'mm:ss:S' }}</div>
-            <div *ngIf="!whitePov" class="timer">{{wtimer| date:'mm:ss:S' }}</div>
-        </div>
-        <div *ngIf="promotionDialogVisible">
-            <div type="button" (click)="promoteQueen()" class="promotion-button"
-                [ngClass]="{'wq': color == 'white', 'bq': color == 'black'}"></div>
-            <div type="button" (click)="promoteRook()" class="promotion-button"
-                [ngClass]="{'wr': color == 'white', 'br': color == 'black'}"></div>
-            <div type="button" (click)="promoteBishop()" class="promotion-button"
-                [ngClass]="{'wb': color == 'white', 'bb': color == 'black'}"></div>
-            <div type="button" (click)="promoteKnight()" class="promotion-button"
-                [ngClass]="{'wn': color == 'white', 'bn': color == 'black'}"></div>
-        </div>
-        <div class="board" appDisableRightClick>
-            <div *ngFor="let piece of pieces" [ngClass]="piece.class" cdkDrag cdkDragBoundary=".board"
-                (cdkDragEnded)="releasePiece($event)" (cdkDragStarted)="getPiece($event)"
-                [cdkDragFreeDragPosition]="piece.pos"></div>
-            <div *ngFor="let move of possibleMoves" [ngClass]="move"></div>
-        </div>
-        <div class="user-card">
-            <a class="profile" [routerLink]="['/profile', !whitePov ? player2.username: player1.username]">{{!whitePov ?
-                player2.username:
-                player1.username}} ({{!whitePov ? player2.rating: player1.rating}})</a>
-            <div *ngIf="whitePov" class="timer">{{wtimer| date:'mm:ss:S' }}</div>
-            <div *ngIf="!whitePov" class="timer">{{btimer| date:'mm:ss:S' }}</div>
-        </div>
     </div>
-</div>
-<div class="right-div">
-    <div></div>
-    <div class="game-buttons-container">
-        <div>
-            <button mat-button class="game-button" id="flip-board-button" (click)="flipBoard()"></button>
-            <h3 class="hide">Flip board</h3>
-        </div>
-        <div>
-            <button mat-button class="game-button" id="resign-button" (click)="resign()"></button>
-            <h3 class="hide">Resign</h3>
-        </div>
-        <div *ngIf="!drawOffered">
-            <button mat-button class="game-button" id="offer-draw-button" (click)="offerDraw()"></button>
-            <h3 class="hide">Offer draw</h3>
-        </div>
-        <div *ngIf="drawOffered">
-            <button mat-button class="game-button" id="accept-draw-button" (click)="acceptDraw()"></button>
-            <h3 class="hide">Accept draw</h3>
-        </div>
-    </div>
-    
-    <div class="chat-container">
-        <div class="chat-display">
-            <div class="chat-message" *ngFor="let message of messages">
-                <span class="message-author">{{message.author}}</span>: {{message.content}}
+    <div class="main">
+        <div  class="game-container">
+            <div class="profile" class="user-card">
+                <a [routerLink]="['/profile', whitePov ? player2.username: player1.username]">{{whitePov ?
+                    player2.username:
+                    player1.username}} ({{whitePov ? player2.rating: player1.rating}})</a>
+                <div *ngIf="whitePov" class="timer">{{btimer| date:'mm:ss:S' }}</div>
+                <div *ngIf="!whitePov" class="timer">{{wtimer| date:'mm:ss:S' }}</div>
+            </div>
+            <div *ngIf="promotionDialogVisible">
+                <div type="button" (click)="promoteQueen()" class="promotion-button"
+                    [ngClass]="{'wq': color == 'white', 'bq': color == 'black'}"></div>
+                <div type="button" (click)="promoteRook()" class="promotion-button"
+                    [ngClass]="{'wr': color == 'white', 'br': color == 'black'}"></div>
+                <div type="button" (click)="promoteBishop()" class="promotion-button"
+                    [ngClass]="{'wb': color == 'white', 'bb': color == 'black'}"></div>
+                <div type="button" (click)="promoteKnight()" class="promotion-button"
+                    [ngClass]="{'wn': color == 'white', 'bn': color == 'black'}"></div>
+            </div>
+            <div class="board" appDisableRightClick>
+                <div *ngFor="let piece of pieces" [ngClass]="piece.class" cdkDrag cdkDragBoundary=".board"
+                    (cdkDragEnded)="releasePiece($event)" (cdkDragStarted)="getPiece($event)"
+                    [cdkDragFreeDragPosition]="piece.pos"></div>
+                <div *ngFor="let move of possibleMoves" [ngClass]="move"></div>
+            </div>
+            <div class="user-card">
+                <a class="profile"
+                    [routerLink]="['/profile', !whitePov ? player2.username: player1.username]">{{!whitePov ?
+                    player2.username:
+                    player1.username}} ({{!whitePov ? player2.rating: player1.rating}})</a>
+                <div *ngIf="whitePov" class="timer">{{wtimer| date:'mm:ss:S' }}</div>
+                <div *ngIf="!whitePov" class="timer">{{btimer| date:'mm:ss:S' }}</div>
             </div>
         </div>
-        <form class="input-message" (submit)="sendMessage(message)">
-            <input #message matInput placeholder="Send a message...">
-            <button type="submit">Send</button>
-        </form>
+    </div>
+    <div class="right-div">
+        <div></div>
+        <div class="game-buttons-container">
+            <div style="position: relative;">
+                <button mat-button class="game-button" id="flip-board-button" (click)="flipBoard()"></button>
+                <h3 class="hide">Flip</h3>
+            </div>
+            <div style="position: relative;">
+                <button mat-button class="game-button" id="resign-button" (click)="resign()"></button>
+                <h3 class="hide">Resign</h3>
+            </div>
+            <div *ngIf="!drawOffered" style="position: relative;">
+                <button mat-button class="game-button" id="offer-draw-button" (click)="offerDraw()"></button>
+                <h3 class="hide">Offer draw</h3>
+            </div>
+            <div *ngIf="drawOffered" style="position: relative;">
+                <button mat-button class="game-button" id="accept-draw-button" (click)="acceptDraw()"></button>
+                <h3 class="hide">Accept draw</h3>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-display">
+                <div class="chat-message" *ngFor="let message of messages">
+                    <span class="message-author">{{message.author}}</span>: {{message.content}}
+                </div>
+            </div>
+            <form class="input-message" (submit)="sendMessage(message)">
+                <input #message matInput placeholder="Send a message...">
+                <button type="submit">Send</button>
+            </form>
+        </div>
     </div>
 </div>

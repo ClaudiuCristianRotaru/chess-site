@@ -16,8 +16,16 @@ export class GameService {
     }));
   }
 
-  getUserGames(username:string, query:string){
-    return this.http.get<GameData[]>(`http://localhost:3000/game/user/${username}${query}`).pipe(map(game => {
+  getTopGames(){
+    return this.http.get<GameData[]>(`http://localhost:3000/game/games/top`).pipe(map(game => {
+      console.log(game);
+      return game;
+    }));
+  }
+
+  getUserGames(username:string, page :number, pageSize: number){
+    return this.http.get<GameData[]>(`http://localhost:3000/game/user/${username}?page=${page}&pageSize=${pageSize}`).pipe(map(game => {
+      console.log(game);
       return game;
     }));
   }
