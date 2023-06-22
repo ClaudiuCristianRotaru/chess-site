@@ -19,7 +19,7 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userService.currentUser.subscribe(x => {this.user = x, this.checkExistingGameAndRedirect()});
-    
+    this.userService.verifyUser().subscribe( x=> console.log(x));
     this.socket.on('new-match', param => {
       this._ngZone.runOutsideAngular(() => {
           this._ngZone.run(() => { this.navigateToGame(param) });

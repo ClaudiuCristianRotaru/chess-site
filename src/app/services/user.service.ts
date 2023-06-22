@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 import { UserData } from '../models/user-data';
 
 @Injectable({
@@ -17,26 +17,25 @@ export class UserService {
     this.currentUser = this.currentUserSubject.asObservable();
    }
 
-   getAllUsers(){
-    return this.http.get<{index: number, userData: UserData}[]>('http://localhost:3000/user/users?orderBy=rating:desc').pipe(map(user => {
-      return user;
-    }));
+  verifyUser() {
+    return this.http.get<any>('http://localhost:3000/user/verify');
+  }
+
+  getAllUsers() {
+    return this.http.get<{index: number, userData: UserData}[]>('http://localhost:3000/user/users?orderBy=rating:desc');
   }
 
   loginUser(username:string, password:string): Observable<UserData> {
-    return this.http.post<UserData>('http://localhost:3000/user/login', {username: username, password: password}).pipe(map(user => {
+    return this.http.post<UserData>('http://localhost:3000/user/login', {username: username, password: password}).pipe(tap(user => {
       if(user && user.jwt) {
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
       }
-      return user;
     }));
   }
 
   registerUser(username:string, email:string, password:string, rating:number): Observable<UserData> {
-    return this.http.post<UserData>('http://localhost:3000/user/register', {username: username, email: email, password: password, rating: rating}).pipe(map(user=> {
-      return user;
-    }))
+    return this.http.post<UserData>('http://localhost:3000/user/register', {username: username, email: email, password: password, rating: rating});
   }
 
   logoutUser() {
@@ -45,14 +44,10 @@ export class UserService {
   }
 
   getUserById(userId: string): Observable<UserData> {
-    return this.http.get<UserData>('http://localhost:3000/user/id/'+userId).pipe(map(user=> {
-      return user;
-    }))
+    return this.http.get<UserData>('http://localhost:3000/user/id/'+userId);
   }
 
   getUserByUsername(username: string): Observable<UserData> {
-    return this.http.get<UserData>('http://localhost:3000/user/username/'+username).pipe(map(user=> {
-      return user;
-    }))
+    return this.http.get<UserData>('http://localhost:3000/user/username/'+username);
   }
 }

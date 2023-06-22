@@ -9,11 +9,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { MatButton, MatButtonModule } from '@angular/material/button';
+import { GameEndedComponent } from './game-ended/game-ended.component';
 
 
 @NgModule({
   declarations: [
     GameComponent,
+    GameEndedComponent,
     DisableRightClickDirective
   ],
   imports: [

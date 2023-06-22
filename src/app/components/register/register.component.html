@@ -1,10 +1,10 @@
 <div class="form">
-    <h1>Register Form</h1>
+    <h1>Register</h1>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" #localForm="ngForm">
         <div>
             <mat-form-field>
                 <mat-label>Username: </mat-label>
-                <input matInput class="text-field" type="text" formControlName="username"
+                <input matInput maxlength="30" class="text-field" type="text" formControlName="username"
                     [ngClass]="{error: !registerForm.get('username').valid}">
             </mat-form-field>
         </div>
@@ -37,7 +37,7 @@
         <div>
             <mat-form-field>
                 <mat-label>Password: </mat-label>
-                <input matInput class="text-field" type="password" formControlName="password"
+                <input maxlength="30" matInput class="text-field" type="password" formControlName="password"
                     [ngClass]="{error: !registerForm.get('password').valid}">
 
             </mat-form-field>
@@ -54,9 +54,9 @@
         <mat-label>Starting level: </mat-label>
         <div>
             <mat-radio-group formControlName="rating" aria-label="Select an option">
-                <mat-radio-button value="400">Novice</mat-radio-button>
-                <mat-radio-button value="800">Beginner</mat-radio-button>
-                <mat-radio-button value="1200">Intermediate</mat-radio-button>
+                <mat-radio-button value="400">Novice (400)</mat-radio-button>
+                <mat-radio-button value="800">Beginner (800)</mat-radio-button>
+                <mat-radio-button value="1200">Intermediate (1200)</mat-radio-button>
             </mat-radio-group>
         </div>
         <small *ngIf="registerForm.get('rating').errors?.['required']">

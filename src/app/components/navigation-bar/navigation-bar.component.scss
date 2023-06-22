@@ -57,7 +57,7 @@ ul {
 
 #logo {
     height: 100%;
-    background-image: url("https://cdn-icons-png.flaticon.com/512/7697/7697554.png");
+    background-image: url("/assets/logo.svg");
     background-repeat: no-repeat;
     background-size: contain;
     margin: auto;
@@ -83,7 +83,8 @@ ul {
     width: 30px;
     height: 30px;
     display: block;
-    background-image: url("https://cdn-icons-png.flaticon.com/512/3889/3889524.png");
+    background-image: url("/assets/logout-logo.svg");
+    margin-left: 10px;
     background-repeat: no-repeat;
     background-size: cover;
 }

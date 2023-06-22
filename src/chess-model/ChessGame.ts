@@ -13,11 +13,9 @@ import { GameParams } from './GameParams';
 class ChessGame {
     gameParams: GameParams;
     chessBoard: Board;
-    isRunning: boolean;
     constructor() {
         this.gameParams = new GameParams();
         this.chessBoard = new Board();
-        this.isRunning = true;
     }
 
     convertFileToDigit: any = {
@@ -243,9 +241,6 @@ class ChessGame {
                 if (this.getPossibleMovesNumber(!forWhite) == 0) {
                     return { result: forWhite ? "White win" : "Black win", message: "checkmate" }
                 }
-                // else {
-                //     console.log("check");
-                // }
             }
             else {
                 if (this.getPossibleMovesNumber(!forWhite) == 0) {
@@ -257,7 +252,7 @@ class ChessGame {
 
     }
 
-    nextStep(args: number[], promotion = "r"): void {
+    nextStep(args: number[], promotion = "q"): void {
         let pieces: IPiece[]
         if (this.gameParams.whiteTurn) {
             pieces = this.gameParams.whitePieces;

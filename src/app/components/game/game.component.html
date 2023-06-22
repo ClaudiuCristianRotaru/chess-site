@@ -11,7 +11,7 @@
                 <div *ngIf="whitePov" class="timer">{{btimer| date:'mm:ss:S' }}</div>
                 <div *ngIf="!whitePov" class="timer">{{wtimer| date:'mm:ss:S' }}</div>
             </div>
-            <div *ngIf="promotionDialogVisible">
+            <div *ngIf="promotionDialogVisible" class="promotion-dialog">
                 <div type="button" (click)="promoteQueen()" class="promotion-button"
                     [ngClass]="{'wq': color == 'white', 'bq': color == 'black'}"></div>
                 <div type="button" (click)="promoteRook()" class="promotion-button"
@@ -38,12 +38,12 @@
         </div>
     </div>
     <div class="right-div">
-        <div></div>
         <div class="game-buttons-container">
             <div style="position: relative;">
                 <button mat-button class="game-button" id="flip-board-button" (click)="flipBoard()"></button>
                 <h3 class="hide">Flip</h3>
             </div>
+            <div *ngIf="color!='spectator'" style="display: flex;">
             <div style="position: relative;">
                 <button mat-button class="game-button" id="resign-button" (click)="resign()"></button>
                 <h3 class="hide">Resign</h3>
@@ -57,6 +57,7 @@
                 <h3 class="hide">Accept draw</h3>
             </div>
         </div>
+        </div>
 
         <div class="chat-container">
             <div class="chat-display">
@@ -64,9 +65,9 @@
                     <span class="message-author">{{message.author}}</span>: {{message.content}}
                 </div>
             </div>
-            <form class="input-message" (submit)="sendMessage(message)">
-                <input #message matInput placeholder="Send a message...">
-                <button type="submit">Send</button>
+            <form class="input-message" *ngIf="color!='spectator'" (submit)="sendMessage(message)">
+                <input #message matInput autocomplete="off" placeholder="Send a message...">
+                <button mat-button type="submit" class="send-button">Send</button>
             </form>
         </div>
     </div>

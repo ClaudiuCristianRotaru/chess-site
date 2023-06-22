@@ -19,6 +19,7 @@ $piece-size: 12.5%;
     padding: 5px;
     overflow-y: scroll;
     word-wrap: break-word;
+    min-height: 300px;
 }
 
 .chat-container {
@@ -27,7 +28,6 @@ $piece-size: 12.5%;
     flex-direction: column;
     background-color: rgb(64, 64, 64);
     padding: 20px;
-
 }
 
 .message-author {
@@ -43,6 +43,7 @@ $piece-size: 12.5%;
     animation: fadeIn 1s;
     background-color: rgb(64, 64, 64);
     padding-inline: 20px;
+    width: fit-content;
 }
 
 .draggable-element .drag-handle {
@@ -131,9 +132,17 @@ $piece-size: 12.5%;
     from {background-color: white;}
     to {background-color: rgb(black, 0.3 );}
   }
+
+  
+@media screen and (max-width: 1000px) {
+    #game {
+        flex-direction: column;
+    }
+    .right-div {
+        max-width: 100% !important;
+    }
+}
 .promotion-button {
-    background-color: maroon;
-    display: block;
     width: 100px;
     height: 100px;
     background-size: 100% 100%;
@@ -141,6 +150,7 @@ $piece-size: 12.5%;
 
 .promotion-dialog {
     display: flex;
+    background-color: rgba(gray,0.9);
     position: absolute;
     z-index: 1001;
 }
@@ -206,6 +216,11 @@ $piece-size: 12.5%;
 .main a {
     font-size: 3ch;
     font-weight: bold;
+    color: white;
+}
+
+.send-button {
+    background-color: gray;
     color: white;
 }
 

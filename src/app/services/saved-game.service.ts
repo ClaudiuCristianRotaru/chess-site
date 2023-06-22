@@ -12,34 +12,23 @@ export class SavedGameService {
   constructor(private http:HttpClient) { }
 
   getUserSavedGames(username:string, page :number, pageSize: number){
-    return this.http.get<SavedGameData[]>(`http://localhost:3000/saved-game/user/${username}?page=${page}&pageSize=${pageSize}`).pipe(map(savedGames => {
-      return savedGames;
-    }));
+    return this.http.get<SavedGameData[]>(`http://localhost:3000/saved-game/user/${username}?page=${page}&pageSize=${pageSize}`);
   }
 
   addUserSavedGame(gameId: string, username: string, note: string) {
-    return this.http.post<SavedGameData>(`http://localhost:3000/saved-game`, {username: username, game_id: gameId, note: note }).pipe(map(savedGame => {
-      return savedGame;
-    }));
+    return this.http.post<SavedGameData>(`http://localhost:3000/saved-game`, {username: username, game_id: gameId, note: note });
   }
 
   getUserSavedGamesCount(username:string) {
-    return this.http.get<number>(`http://localhost:3000/saved-game/user/${username}/count`).pipe(map(count => {
-      return count;
-    }));
+    return this.http.get<number>(`http://localhost:3000/saved-game/user/${username}/count`);
   }
 
   removeUserSavedGame(savedGameId: string){
-    return this.http.delete<any>(`http://localhost:3000/saved-game/id/${savedGameId}`).pipe(map(count => {
-      return count;
-    }));
+    return this.http.delete<any>(`http://localhost:3000/saved-game/id/${savedGameId}`);
   }
 
   getUserSavedGame(gameId: string, username: string) {
-    console.log("yo");
-    return this.http.get<SavedGameData>(`http://localhost:3000/saved-game/${gameId}/user/${username}`,).pipe(map(savedGame => {
-      return savedGame;
-    }));
+    return this.http.get<SavedGameData>(`http://localhost:3000/saved-game/${gameId}/user/${username}`,);
   }
 
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, take } from 'rxjs';
 import { GameData } from 'src/app/models/game-data';
 import { GameService } from '../../services/game.service';
 import { UserData } from 'src/app/models/user-data';
@@ -13,19 +13,17 @@ import { SavedGameService } from 'src/app/services/saved-game.service';
 })
 export class HomeComponent implements OnInit {
 
-  games: BehaviorSubject<GameData[]>;
-  users: BehaviorSubject<{index: number, userData: UserData}[]>;
+  games: GameData[];
+  users: {index: number, userData: UserData}[];
   constructor(private gameService: GameService,private userService: UserService) { }
 
   ngOnInit(): void {
-
-    this.gameService.getTopGames().subscribe(res =>{
-      this.games = new BehaviorSubject<GameData[]>(res);
-      console.log(res);
+    this.gameService.getTopGames().pipe(take(1)).subscribe(res =>{
+      this.games = res;
     });
 
-    this.userService.getAllUsers().subscribe(res =>{
-      this.users = new BehaviorSubject<{index: number, userData: UserData}[]>(res);
+    this.userService.getAllUsers().pipe(take(1)).subscribe(res =>{ 
+      this.users = res;
     });
   }
 

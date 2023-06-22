@@ -9,14 +9,14 @@ $piece-size: 12.5%;
     color: black;
     overflow-x: clip;
 }
-:host {
+#analysis {
     display: flex;
     flex: 1 1 auto;
     width: 100%;
 }
 
 @media screen and (max-width: 1000px) {
-    :host {
+    #analysis {
         flex-direction: column;
     }
     .right-div {
@@ -153,6 +153,7 @@ $piece-size: 12.5%;
     width: 50px;
     height: 50px;
     border-radius: 15px;
+    margin-left: 20px;
 }
 
 #prev{

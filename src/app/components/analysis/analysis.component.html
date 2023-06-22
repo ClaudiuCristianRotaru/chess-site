@@ -1,19 +1,20 @@
+<div *ngIf="gameData" id="analysis">
 <div class="left-div">
 
 </div>
 <div class="main">
-    <div *ngIf="gameData" class="game-container">
+    <div class="game-container">
     <div class="profile" class="user-card">
-        <a [routerLink]="['/profile', whitePov ? gameData.black_player.username : gameData.white_player.username]">
-            {{whitePov ? gameData.black_player.username : gameData.white_player.username}}
+        <a [routerLink]="['/profile', whitePov ? gameData.blackPlayer.username : gameData.whitePlayer.username]">
+            {{whitePov ? gameData.blackPlayer.username : gameData.whitePlayer.username}}
             ({{whitePov ? gameData.blackRating : gameData.whiteRating}})</a>
     </div>
     <div class="board" appDisableRightClick>
         <div *ngFor="let piece of pieces" [ngClass]="piece.class"></div>
     </div>
     <div class="user-card">
-        <a [routerLink]="['/profile', whitePov ? gameData.white_player.username : gameData.black_player.username]">
-            {{whitePov ? gameData.white_player.username : gameData.black_player.username}}
+        <a [routerLink]="['/profile', whitePov ? gameData.whitePlayer.username : gameData.blackPlayer.username]">
+            {{whitePov ? gameData.whitePlayer.username : gameData.blackPlayer.username}}
             ({{whitePov ? gameData.whiteRating : gameData.blackRating}})</a>
     </div>
 </div>
@@ -56,4 +57,5 @@
             {{gamePositions[index].split(" ")[0]}}
         </div>
     </div>
+</div>
 </div>

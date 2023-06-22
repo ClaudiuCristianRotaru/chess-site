@@ -76,7 +76,7 @@
 }
 
 #btn {
-    background-color: green;
+    background-color: #6A0DAD;
     width: 100%;
 }
 
@@ -97,8 +97,9 @@ mat-form-field {
     width: 100%;
 }
 
-mat-radio-button ~ mat-radio-button {
-    padding-inline: 50px;
+mat-radio-button { 
+    display: flex;
+    margin: 5px;
 }
 
 input {

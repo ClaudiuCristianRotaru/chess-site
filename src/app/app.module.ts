@@ -21,35 +21,34 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { AnalysisComponent } from './components/analysis/analysis.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { AnalysisModule } from './components/analysis/analysis.module';
-import { GameEndedComponent } from './game-ended/game-ended.component';
+import { GameEndedComponent } from './components/game/game-ended/game-ended.component';
 import { MatButtonModule } from '@angular/material/button';
+import { ProfileModule } from './components/profile/profile.module';
+import { RegisterModule } from './components/register/register.module';
+import { LoginModule } from './components/login/login.module';
+import { MatchmakingModule } from './components/matchmaking/matchmaking.module';
+import { NavigationBarModule } from './components/navigation-bar/navigation-bar.module';
+
+const modules = [    
+  GameModule,
+  HomeModule,
+  AnalysisModule,
+  ProfileModule,
+  RegisterModule,
+  LoginModule,
+  MatchmakingModule,
+  NavigationBarModule ]
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationBarComponent,
     PageNotFoundComponent,
-    MatchmakingComponent,
-    RegisterComponent,
-    LoginComponent,
-    ProfileComponent,
-    GameEndedComponent,
   ],
   imports: [
     AppRoutingModule,
-    FormsModule,
     BrowserModule,
     BrowserAnimationsModule,
-    GameModule,
-    HomeModule,
-    ReactiveFormsModule,
-    MatRadioModule,
-    MatInputModule,
-    MatFormFieldModule,
-    RouterModule,
-    MatPaginatorModule,
-    AnalysisModule,
-    MatButtonModule
+    modules
   ],
   providers: [{provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi:true}],
   bootstrap: [AppComponent]

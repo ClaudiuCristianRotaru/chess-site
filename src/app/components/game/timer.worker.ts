@@ -1,11 +1,9 @@
 /// <reference lib="webworker" />
 
-addEventListener('message', ({ data }) => {
-  
-});
+let inter = setInterval(ping,100);
 
-let inter = setInterval(doTime,100);
-
-function doTime() {
+function ping() {
   postMessage("");
 }
+
+

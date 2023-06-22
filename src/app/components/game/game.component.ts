@@ -8,7 +8,7 @@ import { CdkDragEnd, CdkDragStart } from '@angular/cdk/drag-drop';
 import { Pawn } from 'src/chess-model/pieces/Pawn';
 import { UserService } from 'src/app/services/user.service';
 import { UserData } from 'src/app/models/user-data';
-import { GameEndedComponent } from 'src/app/game-ended/game-ended.component';
+import { GameEndedComponent } from 'src/app/components/game/game-ended/game-ended.component';
 import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-game',
@@ -31,8 +31,8 @@ export class GameComponent implements OnInit, OnDestroy {
   player1: UserData = null; //white
   player2: UserData = null; //black
   messages: { author: string, content: string }[] = [];
-  wtimer = 3000;
-  btimer = 2000;
+  wtimer = 0;
+  btimer = 0;
   drawOffered: boolean = false;
   ngOnInit(): void {
     this.userService.currentUser.subscribe(x => this.user = x);
@@ -44,19 +44,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
 
     this.socket.emit("join-room", { room: this.gameId, uid: uid }, (response: any) => {
-      this.messages = response.room.chat_logs;
-      this.color = response.color;
-      this.whitePov = this.color == "white";
-      this.wtimer = response.room.whiteTime;
-      this.btimer = response.room.blackTime;
-      this.userService.getUserById(response.room.whiteId).subscribe(res => { this.player1 = res });
-      this.userService.getUserById(response.room.blackId).subscribe(res => { this.player2 = res });
-      this.game.setupFromFEN(response.room.FEN);
-      this.game.setupBoard();
-      this.game.calculateMoves();
-      this.game.gameParams.pastPositions = response.room.pastPositions;
-      this.linkPieces();
-      this.initTimer();
+        this.initGame(response);
     });
 
     this.socket.on("new-move", params => {
@@ -88,6 +76,24 @@ export class GameComponent implements OnInit, OnDestroy {
       this.drawOffered = true;
     })
 
+  }
+
+  initGame(response: any):void {
+    console.log(response);
+    if(response.room.chat_logs)
+    this.messages = response.room.chat_logs;
+    this.color = response.color;
+    this.whitePov = this.color == "white";
+    this.wtimer = response.room.whiteTime;
+    this.btimer = response.room.blackTime;
+    this.userService.getUserById(response.room.whiteId).subscribe(res => { this.player1 = res });
+    this.userService.getUserById(response.room.blackId).subscribe(res => { this.player2 = res });
+    this.game.setupFromFEN(response.room.FEN);
+    this.game.setupBoard();
+    this.game.calculateMoves();
+    this.game.gameParams.pastPositions = response.room.pastPositions;
+    this.linkPieces();
+    this.initTimer();
   }
 
   initTimer():void {
@@ -216,7 +222,8 @@ export class GameComponent implements OnInit, OnDestroy {
     if (gameStatus.result != "Continue") {
       console.log(gameStatus);
       let id = this.gameId.toString();
-      this.socket.emit("game-end", { room: id, status: gameStatus });
+      let material : number = this.game.getSidePiecesValue(true) - this.game.getSidePiecesValue(false);
+      this.socket.emit("game-end", { room: id, status: gameStatus, material: material });
 
     }
 
@@ -250,6 +257,7 @@ export class GameComponent implements OnInit, OnDestroy {
   };
 
   sendMessage(message): void {
+    console.log(message);
     if (message.value.length == 0) return;
     this.messages.push({ author: this.user.username, content: message.value });
     this.socket.emit("send-message", { author: this.user.username, content: message.value, room: this.gameId });
@@ -259,14 +267,15 @@ export class GameComponent implements OnInit, OnDestroy {
   resign(): void {
     let gameStatus;
     let id = this.gameId.toString();
+    let material : number = this.game.getSidePiecesValue(true) - this.game.getSidePiecesValue(false);
     if(this.color == "white") {
-      gameStatus = { result: "Black win", message: "Resignation" }
+      gameStatus = { result: "Black win", message: "Resignation"}
     }
     if(this.color == "black") {
       gameStatus = { result: "White win", message: "Resignation" }
     }
 
-    this.socket.emit("game-end", { room: id, status: gameStatus });
+    this.socket.emit("game-end", { room: id, status: gameStatus, material:material });
   }
 
   offerDraw(): void {
@@ -276,7 +285,8 @@ export class GameComponent implements OnInit, OnDestroy {
   acceptDraw(): void {
     let gameStatus = {result: "Draw", message: "Agreement"};
     let id = this.gameId.toString();
-    this.socket.emit("game-end", { room: id, status: gameStatus });
+    let material : number = this.game.getSidePiecesValue(true) - this.game.getSidePiecesValue(false);
+    this.socket.emit("game-end", { room: id, status: gameStatus, material:material });
   }
   ngOnDestroy(): void {
     this.socket.close();
